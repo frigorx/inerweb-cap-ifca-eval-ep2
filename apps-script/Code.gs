@@ -21,7 +21,7 @@
  */
 
 /* ========== CONFIGURATION ========== */
-var CLE_API = 'EP2-2026-fh-changeMe'; // ← À CHANGER après installation (cf. PROCEDURE_INSTALLATION.md)
+var CLE_API = 'EP2-fh-fff71d49c21a'; // ← À CHANGER après installation (cf. PROCEDURE_INSTALLATION.md)
 var DRIVE_FOLDER_NAME = 'inerWeb_Photos_CCF_EP2_2026';
 
 /* Noms des feuilles (auto-créées si absentes) */

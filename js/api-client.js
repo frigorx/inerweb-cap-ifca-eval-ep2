@@ -15,12 +15,35 @@
 
   var CFG_KEY = 'inerweb.cap-ifca-ep2.config';
 
+  /** Auto-config via URL fragment #cfg=base64({apiUrl,apiKey,prof}) */
+  function _autoConfigFromUrl() {
+    var hash = window.location.hash || '';
+    if (hash.indexOf('#cfg=') !== 0) return false;
+    try {
+      var b64 = decodeURIComponent(hash.substring(5));
+      var cfg = JSON.parse(atob(b64));
+      if (cfg && cfg.apiUrl && cfg.apiKey) {
+        localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+        /* Nettoyer le hash de la barre d'adresse pour ne pas exposer la clé */
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+        console.log('[Api] Auto-configuré via #cfg= (clé hash nettoyée de l\'URL)');
+        return true;
+      }
+    } catch (e) {
+      console.warn('[Api] Échec parse #cfg=', e.message);
+    }
+    return false;
+  }
+
   function getConfig() {
+    /* Au tout 1er appel, tenter l'auto-config via #cfg= */
+    if (!_autoCfgChecked) { _autoConfigFromUrl(); _autoCfgChecked = true; }
     try {
       var raw = localStorage.getItem(CFG_KEY);
       return raw ? JSON.parse(raw) : null;
     } catch (e) { return null; }
   }
+  var _autoCfgChecked = false;
 
   function setConfig(cfg) {
     localStorage.setItem(CFG_KEY, JSON.stringify(cfg));

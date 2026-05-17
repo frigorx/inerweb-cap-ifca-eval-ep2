@@ -256,6 +256,7 @@
     <h1>inerWeb <span class="badge-edu">Édu</span> Eval CAP IFCA — EP2 (Façonnage + Électrique)</h1>
     <span class="sig">par F. Henninot · LP Privé Jacques Raynaud · Campus ÉQUATIO</span>
     <span style="margin-left:auto;font-size:10pt;opacity:0.85;" id="sync-pending">📎 init…</span>
+    <button id="btn-unlock" type="button" style="background:#dd6b20;color:#fff;border:0;padding:6px 14px;border-radius:4px;font-weight:700;cursor:pointer;font-size:11pt;font-family:inherit;" title="Déverrouiller la table des noms d'élèves (mot de passe pédagogique)">🔒 Noms</button>
     <button id="btn-config" type="button" style="background:#dd6b20;color:#fff;border:0;padding:6px 14px;border-radius:4px;font-weight:700;cursor:pointer;font-size:11pt;font-family:inherit;" title="Configurer backend Apps Script">⚠ Config</button>
   </div>
 
@@ -349,6 +350,7 @@
 <script src="js/sync-drive.js"></script>
 <script src="js/config-modal.js"></script>
 <script src="js/pdf-export.js"></script>
+<script src="js/crypto-eleves.js"></script>
 
 <script>
 (function() {
@@ -367,12 +369,11 @@
 
   /* ========== BOOTSTRAP ========== */
   async function init() {
-    /* Charger les 2 barèmes EN PARALLÈLE + tenter la table de correspondance locale */
-    const [bFaco, bElec, jEleves, jCorresp] = await Promise.all([
+    /* Charger les 2 barèmes + liste élèves anonyme EN PARALLÈLE */
+    const [bFaco, bElec, jEleves] = await Promise.all([
       CCF.load('ep2faco'),
       CCF.load('ep2elec'),
-      Catalog.load('eleves_pseudo.json'),
-      Catalog.load('eleves_correspondance.json')  /* 404 silencieux si absent */
+      Catalog.load('eleves_pseudo.json')
     ]);
     if (!bFaco || !bElec) {
       document.getElementById('grid-root').innerHTML =
@@ -382,11 +383,17 @@
     baremes.ep2faco = bFaco;
     baremes.ep2elec = bElec;
     elevesList = (jEleves && jEleves.eleves) || [];
-    correspondance = (jCorresp && jCorresp.corresp) || {};
-    if (Object.keys(correspondance).length > 0) {
-      console.log('[Corresp] Table chargée :', Object.keys(correspondance).length, 'élèves, mode lisible activé');
-    } else {
-      console.log('[Corresp] Pas de table locale → mode anonyme E01..E24');
+
+    /* Tenter le déverrouillage automatique des noms (si mot de passe en session/local storage) */
+    if (window.CryptoEleves) {
+      const ok = await CryptoEleves.tryAutoUnlock();
+      if (ok) {
+        correspondance = CryptoEleves.getCorresp();
+        console.log('[CryptoEleves] Auto-déverrouillage OK :', Object.keys(correspondance).length, 'noms chargés');
+      } else {
+        console.log('[CryptoEleves] Mode anonyme E01..E24 (cliquer 🔒 Noms pour déverrouiller)');
+      }
+      updateUnlockBadge();
     }
     fillEleveSelect();
 
@@ -397,6 +404,7 @@
     document.getElementById('btn-pdf').onclick       = saveBilanPdf;
     document.getElementById('btn-toggle-crits').onclick = toggleCompact;
     document.getElementById('btn-config').onclick    = () => window.ConfigModal && ConfigModal.open();
+    document.getElementById('btn-unlock').onclick    = openUnlockModal;
 
     /* Démarrage : modal config si pas branché + sync auto */
     if (window.ConfigModal) ConfigModal.autoOpenIfNeeded();
@@ -427,6 +435,92 @@
   function eleveLabel(pseudo) {
     const lisible = correspondance[pseudo];
     return lisible ? `${pseudo} — ${lisible}` : pseudo;
+  }
+
+  /* ========== DÉVERROUILLAGE NOMS ========== */
+  function updateUnlockBadge() {
+    const btn = document.getElementById('btn-unlock');
+    if (!btn) return;
+    if (window.CryptoEleves && CryptoEleves.isUnlocked()) {
+      btn.textContent = '🔓 Noms';
+      btn.style.background = '#38a169';
+      btn.title = 'Noms déverrouillés — clic pour reverrouiller';
+    } else {
+      btn.textContent = '🔒 Noms';
+      btn.style.background = '#dd6b20';
+      btn.title = 'Déverrouiller la table des noms (mot de passe)';
+    }
+  }
+
+  function openUnlockModal() {
+    if (!window.CryptoEleves) { alert('Module crypto non chargé'); return; }
+    /* Si déjà déverrouillé : proposer de re-verrouiller */
+    if (CryptoEleves.isUnlocked()) {
+      if (confirm('Les noms sont déverrouillés. Reverrouiller maintenant ?\n\n(Clic OK = oublier le mot de passe sur ce poste, retour mode anonyme E01..E24)')) {
+        CryptoEleves.relock(true); /* clearAll = vide aussi localStorage */
+        correspondance = {};
+        fillEleveSelect();
+        updateUnlockBadge();
+      }
+      return;
+    }
+    /* Sinon : modal de saisie mot de passe */
+    if (document.getElementById('unlock-overlay')) return;
+    const overlay = document.createElement('div');
+    overlay.id = 'unlock-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(27,58,99,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.innerHTML = `
+      <div style="background:#fff;border-radius:12px;padding:24px 28px;max-width:480px;width:100%;">
+        <h2 style="margin:0 0 14px;color:#1b3a63;font-family:Trebuchet MS,sans-serif;">🔓 Déverrouiller les noms d'élèves</h2>
+        <p style="margin:0 0 14px;color:#555;font-size:11pt;line-height:1.5;">
+          Saisis le mot de passe pédagogique pour afficher les pseudos lisibles à la place des codes E01..E24.<br>
+          <small style="color:#888;">Le mot de passe reste sur ton navigateur, jamais envoyé en ligne.</small>
+        </p>
+        <input type="password" id="unlock-pw" placeholder="Mot de passe" autocomplete="current-password"
+          style="width:100%;padding:12px;font-size:14pt;border:2px solid #cbd5e0;border-radius:6px;font-family:inherit;box-sizing:border-box;">
+        <label style="display:block;margin-top:10px;font-size:11pt;color:#555;">
+          <input type="checkbox" id="unlock-remember" checked> Se souvenir sur ce poste (localStorage)
+        </label>
+        <div id="unlock-err" style="color:#c53030;font-size:11pt;margin-top:8px;min-height:18px;"></div>
+        <div style="display:flex;gap:8px;margin-top:16px;">
+          <button id="unlock-cancel" type="button" style="flex:1;padding:11px;background:#fff;color:#888;border:1px solid #cbd5e0;border-radius:6px;cursor:pointer;font-family:inherit;font-size:12pt;">Annuler</button>
+          <button id="unlock-ok" type="button" style="flex:2;padding:11px;background:#ff6b35;color:#fff;border:0;border-radius:6px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13pt;">🔓 Déverrouiller</button>
+        </div>
+        <p style="margin:14px 0 0;font-size:10pt;color:#888;">
+          💡 Mot de passe oublié ? Tu peux régénérer le fichier via <a href="chiffrer.html" target="_blank" style="color:#ff6b35;">chiffrer.html</a>.
+        </p>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    const input = overlay.querySelector('#unlock-pw');
+    input.focus();
+    const close = () => { try { document.body.removeChild(overlay); } catch(e){} };
+
+    overlay.querySelector('#unlock-cancel').onclick = close;
+    const tryUnlock = () => {
+      const pw = input.value;
+      const remember = overlay.querySelector('#unlock-remember').checked;
+      if (!pw) { overlay.querySelector('#unlock-err').textContent = 'Saisis un mot de passe.'; return; }
+      overlay.querySelector('#unlock-err').textContent = '🔄 Vérification…';
+      CryptoEleves.unlock(pw, remember).then(corresp => {
+        correspondance = corresp;
+        close();
+        fillEleveSelect();
+        updateUnlockBadge();
+        /* Si un élève est déjà sélectionné, ré-afficher pour mettre à jour le label */
+        if (currentEleve) {
+          const sel = document.getElementById('pick-eleve');
+          if (sel) sel.value = currentEleve;
+        }
+      }).catch(err => {
+        const msg = err.message === 'MOT_DE_PASSE_INCORRECT' ? '❌ Mot de passe incorrect' :
+                    err.message === 'FICHIER_CHIFFRE_404' ? '❌ Fichier eleves_chiffre.json introuvable' :
+                    '❌ Erreur : ' + err.message;
+        overlay.querySelector('#unlock-err').textContent = msg;
+      });
+    };
+    overlay.querySelector('#unlock-ok').onclick = tryUnlock;
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') tryUnlock(); });
   }
 
   /* ========== CHANGEMENT D'ÉLÈVE ========== */

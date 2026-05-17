@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔐 Chiffrer la table des élèves — inerWeb EP2</title>
+<style>
+body { font-family: Calibri, sans-serif; font-size: 13pt; line-height: 1.5; color: #1a2332; max-width: 900px; margin: 0 auto; padding: 30px 20px; background: #f4f6fa; }
+h1 { color: #1b3a63; font-family: 'Trebuchet MS', sans-serif; border-bottom: 4px solid #ff6b35; padding-bottom: 10px; }
+h2 { color: #1b3a63; font-family: 'Trebuchet MS', sans-serif; margin-top: 24px; font-size: 14pt; }
+.card { background: #fff; padding: 18px 22px; border-radius: 8px; margin-bottom: 14px; border: 1px solid #e0e4ea; }
+label { display: block; font-weight: 700; font-size: 11pt; color: #1b3a63; margin-bottom: 4px; }
+input[type=text], input[type=password], textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; font-family: Consolas, monospace; font-size: 11pt; box-sizing: border-box; }
+textarea { font-family: Consolas, monospace; min-height: 280px; line-height: 1.4; }
+button { background: #ff6b35; color: #fff; border: 0; padding: 10px 16px; border-radius: 4px; font-weight: 700; font-size: 13pt; cursor: pointer; margin-right: 8px; margin-top: 8px; font-family: inherit; }
+button:hover { background: #e55a25; }
+button.secondary { background: #fff; color: #1b3a63; border: 1px solid #1b3a63; }
+.warn { background: #fff8e1; border-left: 5px solid #dd6b20; padding: 10px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; font-size: 11pt; }
+.ok { background: #f0fff4; border-left: 5px solid #38a169; padding: 10px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+.err { background: #fff5f5; border-left: 5px solid #c53030; padding: 10px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; color: #9b2c2c; }
+code { background: #f4f6fa; padding: 2px 6px; border-radius: 3px; font-family: Consolas, monospace; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+a { color: #ff6b35; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<h1>🔐 Chiffrer la table des élèves</h1>
+<p>Outil pour générer ou re-générer le fichier <code>data/eleves_chiffre.json</code> avec ton propre mot de passe.</p>
+
+<div class="warn">
+  <strong>⚠ RGPD :</strong> Cette page tourne <strong>100% en local</strong> dans ton navigateur. Aucune donnée n'est envoyée nulle part. Le mot de passe et les noms restent sur ton PC.
+</div>
+
+<div class="card">
+  <h2>1. Choisir le mot de passe</h2>
+  <label>Mot de passe pédagogique (à retenir, donné à Lakhera et à toi-même)</label>
+  <input type="password" id="pw" placeholder="ex: ifca2026fh ou autre — minimum 6 caractères">
+  <p style="font-size:10pt;color:#666;margin-top:4px;">💡 Conseil : choisis quelque chose de mémorable mais pas évident (pas "1234" ni "azerty"). 8+ caractères c'est bien.</p>
+</div>
+
+<div class="card">
+  <h2>2. Table de correspondance E0X → pseudo lisible</h2>
+  <label>Format JSON : <code>{ "E01": "ABadis", "E02": "AYacine", ... }</code></label>
+  <textarea id="corresp" placeholder='{
+  "E01": "ABadis",
+  "E02": "AYacine",
+  ...
+}'></textarea>
+  <button class="secondary" id="btn-load-default">📥 Charger les 24 pseudos CAP IFCA 2 par défaut</button>
+</div>
+
+<div class="card">
+  <h2>3. Chiffrer et télécharger</h2>
+  <button id="btn-encrypt">🔒 Chiffrer et télécharger eleves_chiffre.json</button>
+  <div id="result"></div>
+</div>
+
+<div class="card">
+  <h2>4. Installer le fichier</h2>
+  <ol>
+    <li>Le fichier <code>eleves_chiffre.json</code> est téléchargé dans ton dossier <strong>Téléchargements</strong>.</li>
+    <li>Copie-le dans le dossier <code>data/</code> de ton projet local <code>C:\Users\henni\inerweb-cap-ifca-eval-ep2\data\</code> (écrase l'ancien).</li>
+    <li>Commit + push GitHub :
+      <pre style="background:#1b3a63;color:#fff;padding:10px;border-radius:4px;font-size:11pt;overflow-x:auto;">cd C:\Users\henni\inerweb-cap-ifca-eval-ep2
+git add data/eleves_chiffre.json
+git commit -m "MAJ table chiffrée des élèves"
+git push</pre>
+    </li>
+    <li>Attends 1-2 min pour que GitHub Pages se redéploie.</li>
+    <li>Recharge <a href="https://frigorx.github.io/inerweb-cap-ifca-eval-ep2/" target="_blank">l'app</a> → bouton <strong>🔓 Déverrouiller noms</strong> → saisis ton mot de passe.</li>
+  </ol>
+</div>
+
+<p style="margin-top:30px;font-size:10pt;color:#888;text-align:center;">
+  inerWeb Édu · F. Henninot · LP Privé Jacques Raynaud
+</p>
+
+<script src="js/crypto-eleves.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  /* Défaut : les 24 pseudos extraits de l'ancien eleves_pseudo.json */
+  var DEFAULT_CORRESP = {
+    "E01": "ABadis", "E02": "AYacine", "E03": "BAbderahim", "E04": "BKaïss",
+    "E05": "BIyad", "E06": "CDainis", "E07": "DRïad", "E08": "DMathys",
+    "E09": "DSouleymane", "E10": "FRyad", "E11": "GBartosz", "E12": "KYoussouf",
+    "E13": "KYanis", "E14": "MFrédéric", "E15": "MMyrone", "E16": "NFrancis",
+    "E17": "ONabil", "E18": "OHerve", "E19": "SAnes", "E20": "TAli",
+    "E21": "bjibril", "E22": "adavid", "E23": "flancinet", "E24": "adriss"
+  };
+
+  document.getElementById('btn-load-default').onclick = function() {
+    document.getElementById('corresp').value = JSON.stringify(DEFAULT_CORRESP, null, 2);
+  };
+
+  document.getElementById('btn-encrypt').onclick = function() {
+    var pw = document.getElementById('pw').value;
+    var raw = document.getElementById('corresp').value.trim();
+    var result = document.getElementById('result');
+    result.innerHTML = '';
+
+    if (!pw || pw.length < 4) {
+      result.innerHTML = '<div class="err">❌ Mot de passe trop court (min 4 caractères).</div>';
+      return;
+    }
+    var corresp;
+    try { corresp = JSON.parse(raw); }
+    catch (e) {
+      result.innerHTML = '<div class="err">❌ JSON invalide : ' + e.message + '</div>';
+      return;
+    }
+    if (!corresp || Object.keys(corresp).length === 0) {
+      result.innerHTML = '<div class="err">❌ Table vide.</div>';
+      return;
+    }
+
+    result.innerHTML = '<p>🔄 Chiffrement en cours…</p>';
+    CryptoEleves.encrypt(corresp, pw).then(function(payload) {
+      var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'eleves_chiffre.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      result.innerHTML = '<div class="ok">✓ Fichier <strong>eleves_chiffre.json</strong> téléchargé !<br>' +
+        '<small>' + Object.keys(corresp).length + ' élèves chiffrés AES-256-GCM. Suis l\'étape 4 ci-dessous pour le déployer.</small></div>';
+      /* Tester immédiatement qu'on peut déchiffrer */
+      CryptoEleves.encrypt(corresp, pw).then(function() {
+        console.log('[Chiffrer] Test ré-encrypt OK');
+      });
+    }).catch(function(err) {
+      result.innerHTML = '<div class="err">❌ Erreur : ' + err.message + '</div>';
+    });
+  };
+})();
+</script>
+
+</body>
+</html>

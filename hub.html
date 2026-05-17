@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#1b3a63">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="inerWeb FH">
+<title>inerWeb Hub — F. Henninot</title>
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%231b3a63'/><text x='32' y='46' font-size='36' text-anchor='middle' fill='white'>%E2%9D%84</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='32' fill='%231b3a63'/><text x='90' y='130' font-size='100' text-anchor='middle' fill='white'>%E2%9D%84</text></svg>">
+<!-- Manifest PWA inline (data URL) -->
+<link rel="manifest" href='data:application/manifest+json,%7B%22name%22%3A%22inerWeb%20Hub%20FH%22%2C%22short_name%22%3A%22inerWeb%22%2C%22start_url%22%3A%22.%2Fhub.html%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%231b3a63%22%2C%22theme_color%22%3A%22%231b3a63%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjMyIiBmaWxsPSIjMWIzYTYzIi8%2BPHRleHQgeD0iOTYiIHk9IjE0MCIgZm9udC1zaXplPSIxMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIj7inIQ8L3RleHQ%2BPC9zdmc%2B%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9Ijg4IiBmaWxsPSIjMWIzYTYzIi8%2BPHRleHQgeD0iMjU2IiB5PSIzNzAiIGZvbnQtc2l6ZT0iMjkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSI%2BJiN4Mjc0NDs8L3RleHQ%2BPC9zdmc%2B%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D'>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+  background: linear-gradient(135deg, #1b3a63 0%, #0d1f3c 100%);
+  color: #fff;
+  min-height: 100vh; min-height: 100dvh;
+  padding: env(safe-area-inset-top, 16px) 16px env(safe-area-inset-bottom, 16px);
+  display: flex; align-items: center; justify-content: center;
+}
+.box {
+  max-width: 440px; width: 100%;
+  text-align: center;
+}
+.logo {
+  font-size: 56px; line-height: 1;
+  margin-bottom: 6px;
+}
+h1 {
+  font-family: 'Trebuchet MS', sans-serif;
+  font-size: 24px; font-weight: 800;
+  margin-bottom: 4px;
+}
+h1 .edu {
+  background: #ff6b35; color: #fff;
+  padding: 2px 10px; border-radius: 4px;
+  font-size: 14px; margin: 0 4px; vertical-align: middle;
+}
+.subtitle {
+  font-size: 12px; opacity: 0.7;
+  margin-bottom: 28px;
+}
+.cards { display: flex; flex-direction: column; gap: 14px; }
+.card {
+  display: block;
+  background: rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 18px 20px;
+  text-decoration: none; color: #fff;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: transform 0.15s, background 0.2s;
+  text-align: left;
+  position: relative;
+}
+.card:active { transform: scale(0.97); background: rgba(255,255,255,0.18); }
+.card .icon-line { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+.card .icon { font-size: 32px; line-height: 1; }
+.card .title { font-size: 18px; font-weight: 800; flex: 1; }
+.card .arrow { font-size: 20px; opacity: 0.5; }
+.card .desc { font-size: 12px; opacity: 0.75; line-height: 1.4; padding-left: 46px; }
+
+.card.suivi  { background: linear-gradient(135deg, rgba(108,92,231,0.3), rgba(78,205,196,0.2)); border-color: rgba(108,92,231,0.5); }
+.card.ep3    { background: linear-gradient(135deg, rgba(56,161,105,0.3), rgba(45,134,89,0.2)); border-color: rgba(56,161,105,0.5); }
+.card.ep2    { background: linear-gradient(135deg, rgba(255,107,53,0.3), rgba(232,93,38,0.2)); border-color: rgba(255,107,53,0.5); }
+
+.footer {
+  margin-top: 24px; padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 11px; opacity: 0.55; line-height: 1.5;
+}
+.footer a { color: #ff9b6b; text-decoration: none; font-weight: 700; }
+.footer a:active { opacity: 0.7; }
+
+.install-tip {
+  margin-top: 14px; padding: 10px 14px;
+  background: rgba(255,107,53,0.15);
+  border: 1px solid rgba(255,107,53,0.4);
+  border-radius: 10px;
+  font-size: 11px; opacity: 0.9; line-height: 1.5;
+}
+.install-tip strong { color: #ffa57a; }
+
+@media (min-width: 600px) {
+  h1 { font-size: 28px; }
+  .card .title { font-size: 19px; }
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <div class="logo">❄</div>
+  <h1>inerWeb<span class="edu">Édu</span>Hub</h1>
+  <div class="subtitle">F. Henninot · LP Jacques Raynaud · Marseille</div>
+
+  <div class="cards">
+
+    <!-- SUIVI DE STAGE (TT-IA) -->
+    <a class="card suivi" href="https://frigorx.github.io/tt-ia/inerweb_prof.html#cfg=eyJhcGlVcmwiOiJodHRwczovL3NjcmlwdC5nb29nbGUuY29tL21hY3Jvcy9zL0FLZnljYnpWdlhaUmk0OTc1T000UDhBSmVvRFd2blRiRlNmVHBWVURFcnpyTmsyUjJrbmZ4QnhDdy1BLWtMbUthTnptVzM1VjFBL2V4ZWMiLCJhcGlLZXkiOiJpbmVyV2ViMjAyNmZoIiwibm9tUHJvZiI6IkhlbmluaW5vdCJ9">
+      <div class="icon-line">
+        <span class="icon">📋</span>
+        <span class="title">Suivi de stage</span>
+        <span class="arrow">→</span>
+      </div>
+      <div class="desc">inerWeb TT-IA · Tableau de bord prof PFMP, CCF, élèves, compétences</div>
+    </a>
+
+    <!-- CCF EP3 -->
+    <a class="card ep3" href="https://frigorx.github.io/inerweb-cap-ifca-eval/">
+      <div class="icon-line">
+        <span class="icon">🔧</span>
+        <span class="title">Évaluation CCF EP3</span>
+        <span class="arrow">→</span>
+      </div>
+      <div class="desc">Mise en service / entretien · Manipulation fluides · 4 profs partagés</div>
+    </a>
+
+    <!-- CCF EP2 -->
+    <a class="card ep2" href="https://frigorx.github.io/inerweb-cap-ifca-eval-ep2/#cfg=eyJhcGlVcmwiOiJodHRwczovL3NjcmlwdC5nb29nbGUuY29tL21hY3Jvcy9zL0FLZnljYnowSklxZmlfN2lwbjQ5dC1KQXc5MjFuQS0wVVlJSURzd2dSdm1NS19hSG83NHhzRGQ2SHpoWjc2WV9zTjh4OWtSdkZ3L2V4ZWMiLCJhcGlLZXkiOiJFUDItZmgtZmZmNzFkNDljMjFhIiwicHJvZiI6IkZIIn0%3D">
+      <div class="icon-line">
+        <span class="icon">⚡</span>
+        <span class="title">Évaluation CCF EP2</span>
+        <span class="arrow">→</span>
+      </div>
+      <div class="desc">Façonnage + Raccordement Électrique · Rattrapage CAP IFCA · Photos + signatures</div>
+    </a>
+
+  </div>
+
+  <!-- Astuce installation -->
+  <div class="install-tip">
+    <strong>💡 Installer sur l'écran d'accueil</strong><br>
+    iPhone : Safari → ⤴ Partager → <strong>Sur l'écran d'accueil</strong><br>
+    Android : Chrome → ⋮ → <strong>Ajouter à l'écran d'accueil</strong>
+  </div>
+
+  <div class="footer">
+    Page personnelle · <strong>ne pas partager</strong> (contient les clés API)<br>
+    Hub sécurisé v1 · 2026-05-17
+  </div>
+</div>
+
+<script>
+  /* Détection PWA installée pour cacher le tip si déjà installé */
+  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+    var tip = document.querySelector('.install-tip');
+    if (tip) tip.style.display = 'none';
+  }
+</script>
+</body>
+</html>

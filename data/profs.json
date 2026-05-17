@@ -1,9 +1,9 @@
 {
-  "_doc": "Source unique des 4 enseignants de l'équipe. Initiales fixes. Chaque prof complète SON profil au 1er login (mail CCF, ED login...) — stocké en localStorage de SON navigateur uniquement, jamais ici.",
+  "_doc": "Liste des 4 examinateurs CCF EP2 — codes d'initiales uniquement (pas de noms complets pour simplicité).",
   "profs": [
-    { "code": "FH", "nom": "F. Henninot", "prenom": "Franck", "couleur": "#1b3a63", "role": "admin" },
-    { "code": "PW", "nom": "P. Whart",    "prenom": "",        "couleur": "#ff6b35", "role": "prof"  },
-    { "code": "ZN", "nom": "ZN",           "prenom": "",        "couleur": "#2d8659", "role": "prof"  },
-    { "code": "TM", "nom": "TM",           "prenom": "",        "couleur": "#6b3a8a", "role": "prof"  }
+    { "code": "FH", "nom": "FH", "couleur": "#1b3a63", "role": "admin" },
+    { "code": "ZN", "nom": "ZN", "couleur": "#2d8659", "role": "prof"  },
+    { "code": "TW", "nom": "TW", "couleur": "#ff6b35", "role": "prof"  },
+    { "code": "TM", "nom": "TM", "couleur": "#6b3a8a", "role": "prof"  }
   ]
 }

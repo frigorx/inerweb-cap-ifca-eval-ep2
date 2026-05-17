@@ -521,8 +521,10 @@
     if (!sel) return;
     sel.innerHTML = '<option value="">— Choisir —</option>' +
       profsList.map(p => {
-        const sel = p.code === currentProf ? ' selected' : '';
-        return `<option value="${p.code}"${sel}>${p.code} — ${escapeHtmlSafe(p.nom)}</option>`;
+        const isSelected = p.code === currentProf ? ' selected' : '';
+        /* Si nom == code, on n'affiche que le code (pas "FH — FH") */
+        const label = (p.nom && p.nom !== p.code) ? `${p.code} — ${escapeHtmlSafe(p.nom)}` : p.code;
+        return `<option value="${p.code}"${isSelected}>${label}</option>`;
       }).join('');
   }
   function escapeHtmlSafe(s) {
@@ -555,7 +557,9 @@
     banner.hidden = false;
     document.getElementById('confirm-eleve').textContent = eleveLabel(currentEleve);
     const prof = profsList.find(p => p.code === currentProf);
-    document.getElementById('confirm-prof').textContent = prof ? `${prof.code} — ${prof.nom}` : currentProf;
+    /* Si nom == code, on n'affiche que le code (pas "FH — FH") */
+    const profLabel = prof ? ((prof.nom && prof.nom !== prof.code) ? `${prof.code} — ${prof.nom}` : prof.code) : currentProf;
+    document.getElementById('confirm-prof').textContent = profLabel;
   }
 
   /* ========== DÉVERROUILLAGE NOMS ========== */

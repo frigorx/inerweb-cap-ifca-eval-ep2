@@ -24,6 +24,14 @@
 var CLE_API = 'EP2-fh-fff71d49c21a'; // ← À CHANGER après installation (cf. PROCEDURE_INSTALLATION.md)
 var DRIVE_FOLDER_NAME = 'inerWeb_Photos_CCF_EP2_2026';
 
+/* RGPD : whitelist regex des pseudos autorisés (codes anonymes E01..E99 uniquement).
+   Aucun vrai nom ne doit jamais arriver côté serveur. */
+var PSEUDO_REGEX = /^E\d{2,3}$/;
+
+/* Permissions Drive : par défaut PRIVATE (seul le propriétaire voit).
+   Si tu veux que d'autres profs voient via lien, change en 'LINK'. */
+var DRIVE_SHARING_MODE = 'PRIVATE'; // 'PRIVATE' | 'LINK' (= ANYONE_WITH_LINK)
+
 /* Noms des feuilles (auto-créées si absentes) */
 var SHEETS = {
   NOTES: 'Notes',
@@ -51,6 +59,12 @@ function doPost(e) {
     /* Vérif clé API */
     if (payload.key !== CLE_API) {
       return _json({ ok: false, error: 'CLE_API_INVALIDE' });
+    }
+
+    /* Fix #3 RGPD : valider que le pseudo est anonyme (E01..E99) — refuse les vrais noms */
+    if (payload.eleve !== undefined && !PSEUDO_REGEX.test(payload.eleve)) {
+      _logAudit(null, 'REJECT_PSEUDO', payload.eleve, payload.epreuve, payload.prof, 'FAIL', 'pseudo invalide (RGPD)');
+      return _json({ ok: false, error: 'PSEUDO_INVALIDE_RGPD: doit être E01..E99' });
     }
 
     /* Setup automatique au besoin */
@@ -92,7 +106,12 @@ function doGet(e) {
  */
 function _ensureSetup() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  if (!ss) throw new Error('Aucun Spreadsheet actif (le script doit être lié à un Sheet).');
+  if (!ss) {
+    /* Fix #10: message explicite pour aider au debug */
+    throw new Error('SHEET_NON_LIE: Le script Apps Script n\'est pas lié à un Google Sheet. ' +
+      'Solution : ouvrir le Sheet, menu Extensions > Apps Script, créer un nouveau projet, ' +
+      'coller le Code.gs. (Procédure complète dans PROCEDURE_INSTALLATION.html)');
+  }
 
   /* Vérifier/créer chaque feuille */
   Object.keys(SCHEMAS).forEach(function(name) {
@@ -110,6 +129,23 @@ function _ensureSetup() {
   _ensureDriveFolder();
 
   return ss;
+}
+
+/**
+ * Fix #4 : applique le partage Drive de façon défensive.
+ * Sur compte perso (pas Workspace), DOMAIN_WITH_LINK lève une exception et fait crasher le code
+ * (le fichier reste orphelin dans Drive). On enveloppe dans try/catch et on accepte l'échec.
+ */
+function _applySharing(file) {
+  try {
+    if (DRIVE_SHARING_MODE === 'LINK') {
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    }
+    /* sinon PRIVATE : on ne touche pas, seul le propriétaire (déployeur) voit */
+  } catch (e) {
+    /* Compte perso ne supporte pas DOMAIN — on log et on continue */
+    console.warn('[Drive] setSharing échec (compte perso ?):', e.message);
+  }
 }
 
 function _ensureDriveFolder() {
@@ -198,7 +234,7 @@ function uploadPhoto(ss, p) {
   var blob = Utilities.newBlob(Utilities.base64Decode(b64), 'image/jpeg', fileName);
 
   var file = folder.createFile(blob);
-  file.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW); /* visible profs établissement */
+  _applySharing(file);
 
   var version = _nextVersion(sh, p.eleve, p.epreuve);
   sh.appendRow([
@@ -231,7 +267,7 @@ function uploadSignature(ss, p) {
   var blob = Utilities.newBlob(Utilities.base64Decode(b64), 'image/png', fileName);
 
   var file = folder.createFile(blob);
-  file.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW);
+  _applySharing(file);
 
   var version = _nextVersion(sh, p.eleve, p.epreuve);
   sh.appendRow([
@@ -272,7 +308,7 @@ function uploadPdf(ss, p) {
   var blob = Utilities.newBlob(Utilities.base64Decode(b64), 'application/pdf', fileName);
 
   var file = pdfFolder.createFile(blob);
-  file.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW);
+  _applySharing(file);
 
   var version = _nextPdfVersion(sh, p.eleve);
   sh.appendRow([
@@ -383,13 +419,20 @@ function status(ss) {
  * Lit la dernière ligne avec ce couple, +1.
  */
 function _nextVersion(sh, eleve, epreuve) {
+  /* Fix #2: chercher l'index de la colonne 'Version' dans le schéma de la feuille
+     plutôt que de deviner via r.length. Robuste à des cellules vides en fin de ligne. */
+  var sheetName = sh.getName();
+  var schema = SCHEMAS[sheetName];
+  if (!schema) return 1;
+  var versionCol = schema.indexOf('Version');
+  if (versionCol < 0) return 1;
   var data = sh.getDataRange().getValues();
   var maxV = 0;
   for (var i = 1; i < data.length; i++) {
     var r = data[i];
     if (r[1] === eleve && r[2] === epreuve) {
-      var v = parseInt(r[r.length === 14 ? 12 : 7], 10); /* col 12 pour Notes, col 7 pour Photos/Sig */
-      if (v > maxV) maxV = v;
+      var v = parseInt(r[versionCol], 10);
+      if (!isNaN(v) && v > maxV) maxV = v;
     }
   }
   return maxV + 1;
@@ -398,10 +441,20 @@ function _nextVersion(sh, eleve, epreuve) {
 function _logAudit(ss, action, eleve, epreuve, prof, result, detail) {
   try {
     if (!ss) ss = SpreadsheetApp.getActiveSpreadsheet();
+    if (!ss) {
+      /* Fix #9: au moins logger côté console Apps Script si le sheet est inaccessible */
+      console.warn('[_logAudit] sheet inaccessible —', action, eleve, prof, result, detail);
+      return;
+    }
     var sh = ss.getSheetByName(SHEETS.LOG);
-    if (!sh) return; /* pas encore créée */
+    if (!sh) {
+      console.warn('[_logAudit] feuille', SHEETS.LOG, 'absente —', action, eleve);
+      return;
+    }
     sh.appendRow([new Date(), action, eleve || '', epreuve || '', prof || '', result, detail || '']);
-  } catch (e) { /* silencieux */ }
+  } catch (e) {
+    console.error('[_logAudit] exception:', e.message);
+  }
 }
 
 function _json(obj) {

@@ -35,6 +35,8 @@
     return false;
   }
 
+  var _autoCfgChecked = false; /* Fix #8: déclaré AVANT son usage */
+
   function getConfig() {
     /* Au tout 1er appel, tenter l'auto-config via #cfg= */
     if (!_autoCfgChecked) { _autoConfigFromUrl(); _autoCfgChecked = true; }
@@ -43,7 +45,6 @@
       return raw ? JSON.parse(raw) : null;
     } catch (e) { return null; }
   }
-  var _autoCfgChecked = false;
 
   function setConfig(cfg) {
     localStorage.setItem(CFG_KEY, JSON.stringify(cfg));

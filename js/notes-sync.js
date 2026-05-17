@@ -29,9 +29,34 @@
 
     var k = epreuve + '|' + eleve;
     if (_debounceTimers[k]) clearTimeout(_debounceTimers[k]);
+    /* Fix #6: garder une snapshot pour pouvoir flush sans dépendre des refs */
+    _pendingPushes[k] = { eleve: eleve, epreuve: epreuve, bareme: bareme, saisie: JSON.parse(JSON.stringify(saisie)) };
     _debounceTimers[k] = setTimeout(function() {
-      _pushNow(eleve, epreuve, bareme, saisie);
+      var p = _pendingPushes[k];
+      delete _pendingPushes[k];
+      if (p) _pushNow(p.eleve, p.epreuve, p.bareme, p.saisie);
     }, DEBOUNCE_MS);
+  }
+
+  /* Fix #6: flush immédiat de tous les push en attente (appelé au switch d'élève et beforeunload) */
+  function flushAll() {
+    Object.keys(_debounceTimers).forEach(function(k) {
+      clearTimeout(_debounceTimers[k]);
+      delete _debounceTimers[k];
+      var p = _pendingPushes[k];
+      delete _pendingPushes[k];
+      if (p) _pushNow(p.eleve, p.epreuve, p.bareme, p.saisie);
+    });
+  }
+
+  /* Liste des pending pour flush */
+  var _pendingPushes = {};
+
+  /* beforeunload: si pending, tente un push sync (best effort, sendBeacon-like) */
+  if (typeof window !== 'undefined') {
+    window.addEventListener('beforeunload', function() {
+      flushAll();
+    });
   }
 
   function _pushNow(eleve, epreuve, bareme, saisie) {
@@ -113,6 +138,7 @@
 
   window.NotesSync = {
     schedulePush: schedulePush,
-    fetchCurrent: fetchCurrent
+    fetchCurrent: fetchCurrent,
+    flushAll: flushAll
   };
 })();

@@ -50,6 +50,11 @@
           const idx = niveauIndex(codeNiv);
           if (idx != null) {
             const pts = t.niveaux[idx];
+            /* Fix #1: garde contre NaN si niveaux[idx] est undefined (barème mal formé) */
+            if (typeof pts !== 'number') {
+              console.warn('[CCF] niveau invalide pour tâche', t.id, 'code', codeNiv, '→ ignoré');
+              return;
+            }
             pBloc += pts;
             totalBrut += pts;
             pointsParComp[t.comp] = (pointsParComp[t.comp] || 0) + pts;
@@ -97,7 +102,9 @@
             if (codeNiv) {
               const idx = niveauIndex(codeNiv);
               if (idx != null) {
-                ptsObtenus += t.niveaux[idx];
+                const pts = t.niveaux[idx];
+                if (typeof pts !== 'number') return; /* Fix #1: protection NaN */
+                ptsObtenus += pts;
                 nbTachesNotees++;
               }
             }

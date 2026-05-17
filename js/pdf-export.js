@@ -17,6 +17,7 @@
 
   var CDN_HTML2PDF = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
   var _loadingPromise = null;
+  var _pdfInProgress = false; /* Fix #5: garde double-clic + concurrence auto-PDF/manuel */
 
   /* Charger html2pdf.js depuis CDN une seule fois */
   function _ensureHtml2Pdf() {
@@ -250,15 +251,28 @@
    */
   function generateAndSave(eleve, baremes, saisies, opts) {
     opts = opts || {};
+    if (_pdfInProgress) {
+      console.warn('[PdfExport] génération déjà en cours, requête ignorée');
+      return Promise.resolve({ ok: false, skipped: 'in_progress' });
+    }
+    _pdfInProgress = true;
     var prof = (window.Api && Api.getConfig() && Api.getConfig().prof) || 'FH';
+
+    /* Fix #5 race: deep-copies des saisies pour figer l'état au moment de l'appel
+       (évite que les saisies/baremes mutent pendant la génération PDF async) */
+    var saisiesSnap = JSON.parse(JSON.stringify(saisies || {}));
+    var baremesSnap = baremes; /* baremes ne mutent pas en pratique, on garde la ref */
 
     /* Récupérer les attachements (toutes EP confondues) */
     return Promise.all([
       window.Attach ? Attach.list(eleve, 'ep2faco') : Promise.resolve([]),
       window.Attach ? Attach.list(eleve, 'ep2elec') : Promise.resolve([])
     ]).then(function(attaArr) {
+      /* Fix #15 mineur: tri par date pour garantir l'ordre des signatures */
+      attaArr[0].sort(function(a,b){ return (a.date||'').localeCompare(b.date||''); });
+      attaArr[1].sort(function(a,b){ return (a.date||'').localeCompare(b.date||''); });
       var attachs = { ep2faco: attaArr[0], ep2elec: attaArr[1] };
-      var html = buildHtml(eleve, baremes, saisies, attachs, prof);
+      var html = buildHtml(eleve, baremesSnap, saisiesSnap, attachs, prof);
 
       return _ensureHtml2Pdf().then(function(html2pdf) {
         /* Crée un container temporaire pour la génération */
@@ -267,10 +281,10 @@
         container.style.cssText = 'position:absolute;left:-9999px;top:0;width:210mm;';
         document.body.appendChild(container);
 
-        var rFaco = CCF.compute(baremes.ep2faco, saisies.ep2faco || {});
-        var rElec = CCF.compute(baremes.ep2elec, saisies.ep2elec || {});
-        var aFaco = Object.keys(saisies.ep2faco || {}).length > 0;
-        var aElec = Object.keys(saisies.ep2elec || {}).length > 0;
+        var rFaco = CCF.compute(baremesSnap.ep2faco, saisiesSnap.ep2faco || {});
+        var rElec = CCF.compute(baremesSnap.ep2elec, saisiesSnap.ep2elec || {});
+        var aFaco = Object.keys(saisiesSnap.ep2faco || {}).length > 0;
+        var aElec = Object.keys(saisiesSnap.ep2elec || {}).length > 0;
         var n = 0, sum = 0;
         if (aFaco) { sum += rFaco.note20Brute; n++; }
         if (aElec) { sum += rElec.note20Brute; n++; }
@@ -289,6 +303,8 @@
         return html2pdf().from(container).set(pdfOpts).toPdf().output('datauristring').then(function(dataUri) {
           document.body.removeChild(container);
           /* Tentative upload Drive */
+          /* Fix #5: release flag dès qu'on a le dataUri */
+          var releaseFlag = function() { _pdfInProgress = false; };
           if (window.Api && Api.isConfigured()) {
             return Api.call('uploadPdf', {
               eleve: eleve,
@@ -298,18 +314,21 @@
               noteFinale20: n > 0 ? noteFinale.toFixed(2) : '',
               dataBase64: dataUri
             }).then(function(r) {
+              releaseFlag();
               if (r && r.ok) {
                 _showToast('📄 Bilan PDF sauvé dans Drive ✓ (v' + r.version + ')', 'ok');
                 return { ok: true, driveUrl: r.driveUrl, version: r.version };
               }
               throw new Error('API_KO: ' + (r && r.error));
             }).catch(function(err) {
+              releaseFlag();
               /* Fallback : download local */
               if (!opts.silent) _downloadLocal(dataUri, filename);
               _showToast('⚠ Upload Drive échoué — bilan téléchargé localement', 'warn');
               return { ok: true, downloaded: true, error: err.message };
             });
           } else {
+            releaseFlag();
             /* Pas configuré → download local */
             _downloadLocal(dataUri, filename);
             _showToast('📄 Bilan PDF téléchargé localement (backend non configuré)', 'warn');
@@ -317,6 +336,9 @@
           }
         });
       });
+    }).catch(function(err) {
+      _pdfInProgress = false; /* safety: release flag même si erreur prématurée */
+      throw err;
     });
   }
 

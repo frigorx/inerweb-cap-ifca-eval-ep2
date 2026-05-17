@@ -38,9 +38,14 @@
       '  <p style="margin:4px 0 0;font-size:10pt;color:#888;">Doit correspondre à la valeur <code>CLE_API</code> dans le code Apps Script (modifie-la après installation).</p>',
       '</div>',
       '<div style="margin-bottom:18px;">',
-      '  <label style="display:block;font-weight:700;font-size:11pt;color:#1b3a63;margin-bottom:4px;">Tes initiales prof (pour traçabilité)</label>',
-      '  <input type="text" id="cfg-prof" value="' + escapeAttr(cfg.prof || 'FH') + '" maxlength="6" style="width:100px;padding:9px 11px;border:1px solid #cbd5e0;border-radius:4px;font-weight:700;text-transform:uppercase;font-size:12pt;">',
-      '  <p style="margin:4px 0 0;font-size:10pt;color:#888;">Ex : FH, NL, PW. Sera écrit dans la colonne "Prof" du Sheet.</p>',
+      '  <label style="display:block;font-weight:700;font-size:11pt;color:#1b3a63;margin-bottom:4px;">Examinateur par défaut</label>',
+      '  <select id="cfg-prof" style="padding:9px 11px;border:1px solid #cbd5e0;border-radius:4px;font-weight:700;font-size:12pt;font-family:inherit;min-width:240px;">',
+      '    <option value="FH"' + (cfg.prof === 'FH' || !cfg.prof ? ' selected' : '') + '>FH — F. Henninot</option>',
+      '    <option value="ZN"' + (cfg.prof === 'ZN' ? ' selected' : '') + '>ZN</option>',
+      '    <option value="PW"' + (cfg.prof === 'PW' ? ' selected' : '') + '>PW — P. Whart</option>',
+      '    <option value="TM"' + (cfg.prof === 'TM' ? ' selected' : '') + '>TM</option>',
+      '  </select>',
+      '  <p style="margin:4px 0 0;font-size:10pt;color:#888;">Sera modifiable à tout moment dans le bandeau principal. Tracé dans la colonne "Prof" du Sheet et le PDF.</p>',
       '</div>',
       '<div id="cfg-test-result" style="margin-bottom:14px;font-size:11pt;"></div>',
       '<div style="display:flex;gap:8px;flex-wrap:wrap;">',
@@ -70,12 +75,14 @@
     };
 
     modal.querySelector('#cfg-test').onclick = function() {
-      var tmpCfg = { apiUrl: urlInp.value.trim(), apiKey: keyInp.value.trim(), prof: profInp.value.trim().toUpperCase() };
+      var tmpCfg = { apiUrl: urlInp.value.trim(), apiKey: keyInp.value.trim(), prof: profInp.value };
       if (!tmpCfg.apiUrl || !tmpCfg.apiKey) {
         resultEl.innerHTML = '<span style="color:#c53030;">⚠ Remplis l\'URL et la clé avant de tester.</span>';
         return;
       }
       resultEl.innerHTML = '<span style="color:#888;">🔄 Test en cours…</span>';
+      /* Fix #16: sauvegarder l'ancienne config pour rollback si test échoue */
+      var oldCfg = Api.getConfig();
       Api.setConfig(tmpCfg);
       Api.ping().then(function(info) {
         var rows = Object.keys(info.sheets || {}).map(function(k) {
@@ -87,15 +94,18 @@
           '<small>Feuilles : ' + rows + '</small>' +
           '</div>';
       }).catch(function(err) {
+        /* Fix #16: rollback si test échoue */
+        if (oldCfg) Api.setConfig(oldCfg);
+        else localStorage.removeItem('inerweb.cap-ifca-ep2.config');
         resultEl.innerHTML = '<div style="background:#fff5f5;border:1px solid #c53030;border-radius:4px;padding:10px;color:#c53030;">' +
           '✗ <strong>Échec :</strong> ' + err.message +
-          '<br><small>Vérifie l\'URL (doit finir par /exec) et la clé API (= CLE_API dans le code).</small>' +
+          '<br><small>Vérifie l\'URL (doit finir par /exec) et la clé API (= CLE_API dans le code). Ta config précédente a été restaurée.</small>' +
           '</div>';
       });
     };
 
     modal.querySelector('#cfg-save').onclick = function() {
-      var cfg = { apiUrl: urlInp.value.trim(), apiKey: keyInp.value.trim(), prof: profInp.value.trim().toUpperCase() };
+      var cfg = { apiUrl: urlInp.value.trim(), apiKey: keyInp.value.trim(), prof: profInp.value };
       if (!cfg.apiUrl || !cfg.apiKey) {
         alert('URL et clé sont obligatoires.');
         return;

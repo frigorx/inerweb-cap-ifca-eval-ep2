@@ -274,9 +274,15 @@
     <button id="btn-config" type="button" style="background:#dd6b20;color:#fff;border:0;padding:6px 14px;border-radius:4px;font-weight:700;cursor:pointer;font-size:11pt;font-family:inherit;" title="Configurer backend Apps Script">⚠ Config</button>
   </div>
 
-  <div class="ep2-pick">
+  <div class="ep2-pick" style="grid-template-columns: 1fr 1.5fr auto auto;">
     <div>
-      <label>Élève évalué (rattrapage CAP IFCA 2)</label>
+      <label>👤 Examinateur</label>
+      <select id="pick-prof" title="Qui évalue cet élève (signera comme examinateur)">
+        <option value="">— Choisir —</option>
+      </select>
+    </div>
+    <div>
+      <label>🎓 Élève évalué (clic sur son nom = il confirme)</label>
       <select id="pick-eleve">
         <option value="">— Choisir un élève —</option>
       </select>
@@ -289,6 +295,27 @@
       <label>&nbsp;</label>
       <button id="btn-clear-eleve" title="Effacer toute la saisie pour cet élève (les 2 EP2)">↺ Tout effacer</button>
     </div>
+  </div>
+
+  <!-- BANDEAU CONFIRMATION ÉLÈVE (visible quand un élève est sélectionné) -->
+  <div id="confirm-banner" hidden style="
+    background: linear-gradient(90deg, #f0fff4 0%, #ebf8ff 100%);
+    border: 2px solid #48bb78; border-radius: 8px;
+    padding: 12px 18px; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+    <span style="font-size:22pt;">🎓</span>
+    <div style="flex:1; min-width:240px;">
+      <div style="font-size:10pt; color:#555; text-transform:uppercase; font-weight:700; letter-spacing:0.3px;">Évaluation en cours pour</div>
+      <div id="confirm-eleve" style="font-size:16pt; font-weight:800; color:#1b3a63; font-family:'Trebuchet MS',sans-serif;">—</div>
+    </div>
+    <div style="background:#fff; border:2px solid #1b3a63; border-radius:6px; padding:8px 14px; text-align:center;">
+      <div style="font-size:9pt; color:#666; text-transform:uppercase; font-weight:700;">Examinateur</div>
+      <div id="confirm-prof" style="font-size:14pt; font-weight:800; color:#1b3a63;">—</div>
+    </div>
+    <button id="btn-confirm-change" type="button" style="
+      background:#fff;color:#dd6b20;border:1px solid #dd6b20;
+      padding:8px 14px;border-radius:4px;cursor:pointer;font-weight:700;font-size:11pt;font-family:inherit;
+      " title="Si ce n'est pas le bon élève — change-le dans le menu déroulant ci-dessus">↻ Changer</button>
   </div>
 
   <!-- BANDEAU NOTE FINALE -->
@@ -377,18 +404,28 @@
   let currentEleve = null;
   let activeTab = 'ep2faco';
   let elevesList = [];
+  let profsList = [];
+  let currentProf = 'FH';
   let correspondance = {};
   let saveTimer = null;
   const DEBOUNCE_MS = 400;
 
   /* ========== BOOTSTRAP ========== */
   async function init() {
-    /* Charger les 2 barèmes + liste élèves anonyme EN PARALLÈLE */
-    const [bFaco, bElec, jEleves] = await Promise.all([
+    /* Charger les 2 barèmes + liste élèves + liste profs EN PARALLÈLE */
+    const [bFaco, bElec, jEleves, jProfs] = await Promise.all([
       CCF.load('ep2faco'),
       CCF.load('ep2elec'),
-      Catalog.load('eleves_pseudo.json')
+      Catalog.load('eleves_pseudo.json'),
+      Catalog.load('profs.json')
     ]);
+    profsList = (jProfs && jProfs.profs) || [
+      { code: 'FH', nom: 'F. Henninot' },
+      { code: 'ZN', nom: 'ZN' }
+    ];
+    /* Restaurer le prof courant depuis la config (ou défaut FH) */
+    const cfg = (window.Api && Api.getConfig()) || {};
+    currentProf = cfg.prof || 'FH';
     if (!bFaco || !bElec) {
       document.getElementById('grid-root').innerHTML =
         `<div class="ep2-empty-state" style="color:#c53030;border-color:#c53030;">⚠ Barème manquant : vérifier data/ccf_ep2faco_bareme.json et data/ccf_ep2elec_bareme.json</div>`;
@@ -410,9 +447,18 @@
       updateUnlockBadge();
     }
     fillEleveSelect();
+    fillProfSelect();
+    refreshConfirmBanner();
 
     document.getElementById('pick-eleve').onchange   = (e) => switchEleve(e.target.value || null);
+    document.getElementById('pick-prof').onchange    = (e) => switchProf(e.target.value);
     document.getElementById('btn-clear-eleve').onclick = clearAll;
+    document.getElementById('btn-confirm-change').onclick = () => {
+      /* Focus sur le menu déroulant pour faciliter le changement */
+      const sel = document.getElementById('pick-eleve');
+      sel.focus();
+      try { sel.showPicker && sel.showPicker(); } catch(e){}
+    };
     document.getElementById('btn-print').onclick     = () => window.print();
     document.getElementById('btn-export').onclick    = copyBilan;
     document.getElementById('btn-pdf').onclick       = saveBilanPdf;
@@ -449,6 +495,49 @@
   function eleveLabel(pseudo) {
     const lisible = correspondance[pseudo];
     return lisible ? `${pseudo} — ${lisible}` : pseudo;
+  }
+
+  /* ========== SÉLECTEUR PROF (Examinateur) ========== */
+  function fillProfSelect() {
+    const sel = document.getElementById('pick-prof');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">— Choisir —</option>' +
+      profsList.map(p => {
+        const sel = p.code === currentProf ? ' selected' : '';
+        return `<option value="${p.code}"${sel}>${p.code} — ${escapeHtmlSafe(p.nom)}</option>`;
+      }).join('');
+  }
+  function escapeHtmlSafe(s) {
+    return String(s||'').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function switchProf(code) {
+    if (!code) return;
+    /* Fix #14 mineur: flush pushes en attente AVANT le changement (sinon notes attribuées au nouveau prof) */
+    if (window.NotesSync && NotesSync.flushAll) NotesSync.flushAll();
+    currentProf = code;
+    /* Persister dans la config Api pour que NotesSync/SyncDrive l'utilisent automatiquement */
+    if (window.Api) {
+      const cfg = Api.getConfig() || {};
+      cfg.prof = code;
+      Api.setConfig(cfg);
+    }
+    refreshConfirmBanner();
+    console.log('[Prof] examinateur =', code);
+  }
+
+  /* ========== BANDEAU CONFIRMATION ÉLÈVE + PROF ========== */
+  function refreshConfirmBanner() {
+    const banner = document.getElementById('confirm-banner');
+    if (!banner) return;
+    if (!currentEleve) {
+      banner.hidden = true;
+      return;
+    }
+    banner.hidden = false;
+    document.getElementById('confirm-eleve').textContent = eleveLabel(currentEleve);
+    const prof = profsList.find(p => p.code === currentProf);
+    document.getElementById('confirm-prof').textContent = prof ? `${prof.code} — ${prof.nom}` : currentProf;
   }
 
   /* ========== DÉVERROUILLAGE NOMS ========== */
@@ -539,14 +628,19 @@
 
   /* ========== CHANGEMENT D'ÉLÈVE ========== */
   function switchEleve(idCloud) {
+    /* Fix #6: flush les pushes notes en attente AVANT de switcher (sinon dernière saisie perdue) */
+    if (window.NotesSync && NotesSync.flushAll) NotesSync.flushAll();
+
     /* AUTO-EXPORT PDF : si on quitte un élève qui avait des saisies, on génère son bilan d'abord */
     if (currentEleve && currentEleve !== idCloud) {
       const hasSaisies = Object.keys(saisies.ep2faco || {}).length > 0 || Object.keys(saisies.ep2elec || {}).length > 0;
       if (hasSaisies && window.PdfExport) {
-        /* On lance l'export en arrière-plan, on n'attend pas (l'utilisateur peut continuer) */
-        PdfExport.generateAndSave(currentEleve, baremes, saisies, { silent: true })
-          .then(r => console.log('[Auto-PDF] sauvegardé pour', currentEleve, r))
-          .catch(e => console.warn('[Auto-PDF] échec pour', currentEleve, e));
+        /* Fix #5: snapshot des saisies pour figer l'état (deep clone) */
+        const eleveSnap = currentEleve;
+        const saisiesSnap = JSON.parse(JSON.stringify(saisies));
+        PdfExport.generateAndSave(eleveSnap, baremes, saisiesSnap, { silent: true })
+          .then(r => console.log('[Auto-PDF] sauvegardé pour', eleveSnap, r))
+          .catch(e => console.warn('[Auto-PDF] échec pour', eleveSnap, e));
       }
     }
     currentEleve = idCloud;
@@ -562,6 +656,7 @@
     document.getElementById('tabs-bar').hidden = false;
     renderActive();
     refreshFinalBanner();
+    refreshConfirmBanner();
     /* Si backend configuré : récupérer la dernière version distante (info, pas de merge auto) */
     if (window.NotesSync && window.Api && Api.isConfigured()) {
       EPREUVES.forEach(ep => {
@@ -587,10 +682,31 @@
       console.log('[NotesSync] adopté saisie distante pour', eleve, epreuve);
       if (epreuve === activeTab) renderActive();
       refreshFinalBanner();
+      _showConflictBanner(eleve, epreuve, remote, 'adopted');
     } else {
-      console.warn('[NotesSync] conflit local/distant pour', eleve, epreuve, '— le prof devrait être prévenu');
-      /* TODO : bandeau visuel pour annoncer "FH a saisi v3, tu as v?, fusionner ?" */
+      /* Fix #7: bandeau visuel au lieu du seul console.warn */
+      _showConflictBanner(eleve, epreuve, remote, 'conflict');
     }
+  }
+
+  /* Bandeau jaune flottant si un autre prof a saisi pour cet élève */
+  function _showConflictBanner(eleve, epreuve, remote, mode) {
+    /* Évite les doublons */
+    var old = document.getElementById('conflict-banner-' + epreuve);
+    if (old) old.remove();
+    var banner = document.createElement('div');
+    banner.id = 'conflict-banner-' + epreuve;
+    var isAdopted = (mode === 'adopted');
+    banner.style.cssText = 'background:' + (isAdopted ? '#f0fff4;border-left:5px solid #38a169;' : '#fffbeb;border-left:5px solid #dd6b20;') +
+      'padding:10px 16px;border-radius:0 6px 6px 0;margin-bottom:10px;font-size:11pt;display:flex;justify-content:space-between;align-items:center;gap:10px;';
+    var icon = isAdopted ? '✓' : '⚠';
+    var when = remote.timestamp ? new Date(remote.timestamp).toLocaleString('fr-FR', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) : 'récemment';
+    var msg = isAdopted
+      ? '<strong>' + icon + ' Saisie distante chargée</strong> (' + eleve + ', ' + epreuve.toUpperCase() + ') — v' + remote.version + ' par <strong>' + (remote.prof || '?') + '</strong> à ' + when
+      : '<strong>' + icon + ' Conflit potentiel</strong> sur ' + eleve + ' / ' + epreuve.toUpperCase() + ' — <strong>' + (remote.prof || '?') + '</strong> a saisi v' + remote.version + ' (' + when + ') ; tu as une saisie locale différente. Sauvegarde = nouvelle version v' + (remote.version + 1) + ' (rien n\'est écrasé).';
+    banner.innerHTML = '<span>' + msg + '</span><button onclick="this.parentElement.remove()" style="background:transparent;border:0;font-size:14pt;cursor:pointer;color:#666;padding:0 8px;">×</button>';
+    var root = document.getElementById('grid-root');
+    if (root && root.firstChild) root.insertBefore(banner, root.firstChild);
   }
 
   function loadAllSaisies() {
@@ -885,8 +1001,9 @@
   function refreshFinalBanner() {
     const rFaco = CCF.compute(baremes.ep2faco, saisies.ep2faco);
     const rElec = CCF.compute(baremes.ep2elec, saisies.ep2elec);
-    const aFaco = Object.keys(saisies.ep2faco).length > 0;
-    const aElec = Object.keys(saisies.ep2elec).length > 0;
+    /* Fix #12: tester totalMax > 0 plutôt que keys.length (sinon NaN si tout en NE) */
+    const aFaco = rFaco.totalMax > 0;
+    const aElec = rElec.totalMax > 0;
 
     document.getElementById('note-faco').textContent = aFaco ? rFaco.note20Brute.toFixed(1).replace('.', ',') : '—';
     document.getElementById('note-elec').textContent = aElec ? rElec.note20Brute.toFixed(1).replace('.', ',') : '—';
@@ -912,6 +1029,8 @@
     document.getElementById('tab-mini-faco').textContent = aFaco ? `${rFaco.note20Brute.toFixed(1).replace('.', ',')}/20` : '—/20';
     document.getElementById('tab-mini-elec').textContent = aElec ? `${rElec.note20Brute.toFixed(1).replace('.', ',')}/20` : '—/20';
   }
+
+  /* (Fix #12 appliqué dans refreshFinalBanner ci-dessus) */
 
   function updateBlocStrip() {
     /* Rerender just la bande des blocs (pour mettre à jour les points) */
@@ -957,8 +1076,7 @@
     if (!currentEleve) return;
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
-      const profCode = (window.Api && Api.getConfig && Api.getConfig().prof) || 'FH';
-      CCF.save(activeTab, currentEleve, saisies[activeTab], profCode);
+      CCF.save(activeTab, currentEleve, saisies[activeTab], currentProf);
       flashSaved();
       /* Push vers Apps Script si configuré */
       if (window.NotesSync) NotesSync.schedulePush(currentEleve, activeTab, baremes[activeTab], saisies[activeTab]);
@@ -1023,8 +1141,9 @@
     if (!currentEleve) { alert("Sélectionne d'abord un élève."); return; }
     const rFaco = CCF.compute(baremes.ep2faco, saisies.ep2faco);
     const rElec = CCF.compute(baremes.ep2elec, saisies.ep2elec);
-    const aFaco = Object.keys(saisies.ep2faco).length > 0;
-    const aElec = Object.keys(saisies.ep2elec).length > 0;
+    /* Fix #12: tester totalMax > 0 plutôt que keys.length (sinon NaN si tout en NE) */
+    const aFaco = rFaco.totalMax > 0;
+    const aElec = rElec.totalMax > 0;
     let n = 0, sum = 0;
     if (aFaco) { sum += rFaco.note20Brute; n++; }
     if (aElec) { sum += rElec.note20Brute; n++; }

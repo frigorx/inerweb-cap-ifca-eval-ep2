@@ -478,6 +478,56 @@ function testSetup() {
   return info;
 }
 
+/* ========== KEEPALIVE — anti cold-start ==========
+ * Apps Script s'endort après ~5 min sans requête. Au réveil, V8 prend 5-10 sec.
+ * Solution : trigger temporel qui ping toutes les 5 min → script jamais endormi.
+ * Gain mesuré sur d'autres projets : latence ÷4 (de ~18s à ~3-5s).
+ * Coût : ~2,4 min de runtime/jour sur le quota gratuit de 90 min/jour.
+ *
+ * INSTALLATION (à exécuter MANUELLEMENT 1 fois) :
+ *   Menu déroulant > installKeepAliveTrigger > ▶ Exécuter > autoriser
+ *   Vérifier dans ⏰ Déclencheurs qu'un trigger 5 min existe pour keepAlive
+ */
+function keepAlive() {
+  /* Lecture triviale pour réveiller V8 — pas de I/O coûteuse */
+  return new Date().toISOString();
+}
+
+function installKeepAliveTrigger() {
+  /* Supprimer les triggers keepAlive existants pour éviter les doublons */
+  var existing = ScriptApp.getProjectTriggers();
+  var removed = 0;
+  existing.forEach(function(t) {
+    if (t.getHandlerFunction() === 'keepAlive') {
+      ScriptApp.deleteTrigger(t);
+      removed++;
+    }
+  });
+  /* Créer un nouveau trigger toutes les 5 minutes */
+  ScriptApp.newTrigger('keepAlive')
+    .timeBased()
+    .everyMinutes(5)
+    .create();
+  var msg = '✓ KeepAlive installé : trigger 5 min actif' +
+    (removed > 0 ? ' (' + removed + ' ancien(s) supprimé(s))' : '') +
+    '. Latence requêtes /exec devrait passer de ~10s à ~3s.';
+  Logger.log(msg);
+  return msg;
+}
+
+function uninstallKeepAliveTrigger() {
+  var existing = ScriptApp.getProjectTriggers();
+  var removed = 0;
+  existing.forEach(function(t) {
+    if (t.getHandlerFunction() === 'keepAlive') {
+      ScriptApp.deleteTrigger(t);
+      removed++;
+    }
+  });
+  Logger.log('Supprimé ' + removed + ' trigger(s) keepAlive');
+  return removed;
+}
+
 function testPushNote() {
   var ss = _ensureSetup();
   var r = pushNote(ss, {

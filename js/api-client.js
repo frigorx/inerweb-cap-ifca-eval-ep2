@@ -114,12 +114,40 @@
     });
   }
 
+  /**
+   * warmup : ping silencieux et NON-bloquant pour réveiller Apps Script au démarrage.
+   * Si le script dormait (cold start), ce premier appel "absorbe" les 5-10 sec de réveil
+   * et les requêtes suivantes (notes/photos) sont rapides (~1-2 s).
+   * Le keepAlive trigger Apps Script (toutes les 5 min) maintient ensuite l'éveil.
+   */
+  function warmup() {
+    if (!isConfigured()) return Promise.resolve({ skipped: true });
+    var t0 = Date.now();
+    return call('status', {}).then(function(r) {
+      var dt = Date.now() - t0;
+      console.log('[Api] warmup terminé en ' + dt + 'ms', r && r.ok ? '(ok)' : '(ko)');
+      return { ok: true, latency: dt };
+    }).catch(function(err) {
+      console.warn('[Api] warmup échoué:', err.message);
+      return { ok: false, error: err.message };
+    });
+  }
+
   /* API publique */
   window.Api = {
     getConfig: getConfig,
     setConfig: setConfig,
     isConfigured: isConfigured,
     call: call,
-    ping: ping
+    ping: ping,
+    warmup: warmup
   };
+
+  /* Auto-warmup au chargement (background, ne bloque pas l'UI) */
+  if (typeof window !== 'undefined') {
+    window.addEventListener('load', function() {
+      /* Délai 500ms pour laisser l'UI s'afficher d'abord */
+      setTimeout(function() { warmup(); }, 500);
+    });
+  }
 })();

@@ -8,35 +8,143 @@
   },
   "classes": {
     "CAP_IFCA_2": [
-      "E01", "E02", "E03", "E04", "E05", "E06", "E07", "E08",
-      "E09", "E10", "E11", "E12", "E13", "E14", "E15", "E16",
-      "E17", "E18", "E19", "E20", "E21", "E22", "E23", "E24"
+      "E01",
+      "E02",
+      "E03",
+      "E04",
+      "E05",
+      "E06",
+      "E07",
+      "E08",
+      "E09",
+      "E10",
+      "E11",
+      "E12",
+      "E13",
+      "E14",
+      "E15",
+      "E16",
+      "E17",
+      "E18",
+      "E19",
+      "E20",
+      "E21",
+      "E22",
+      "E23",
+      "E24",
+      "E25",
+      "E26",
+      "E27"
     ]
   },
   "eleves": [
-    { "pseudo": "E01", "classe": "CAP IFCA 2" },
-    { "pseudo": "E02", "classe": "CAP IFCA 2" },
-    { "pseudo": "E03", "classe": "CAP IFCA 2" },
-    { "pseudo": "E04", "classe": "CAP IFCA 2" },
-    { "pseudo": "E05", "classe": "CAP IFCA 2" },
-    { "pseudo": "E06", "classe": "CAP IFCA 2" },
-    { "pseudo": "E07", "classe": "CAP IFCA 2" },
-    { "pseudo": "E08", "classe": "CAP IFCA 2" },
-    { "pseudo": "E09", "classe": "CAP IFCA 2" },
-    { "pseudo": "E10", "classe": "CAP IFCA 2" },
-    { "pseudo": "E11", "classe": "CAP IFCA 2" },
-    { "pseudo": "E12", "classe": "CAP IFCA 2" },
-    { "pseudo": "E13", "classe": "CAP IFCA 2" },
-    { "pseudo": "E14", "classe": "CAP IFCA 2" },
-    { "pseudo": "E15", "classe": "CAP IFCA 2" },
-    { "pseudo": "E16", "classe": "CAP IFCA 2" },
-    { "pseudo": "E17", "classe": "CAP IFCA 2" },
-    { "pseudo": "E18", "classe": "CAP IFCA 2" },
-    { "pseudo": "E19", "classe": "CAP IFCA 2" },
-    { "pseudo": "E20", "classe": "CAP IFCA 2" },
-    { "pseudo": "E21", "classe": "CAP IFCA 2" },
-    { "pseudo": "E22", "classe": "CAP IFCA 2" },
-    { "pseudo": "E23", "classe": "CAP IFCA 2" },
-    { "pseudo": "E24", "classe": "CAP IFCA 2" }
+    {
+      "pseudo": "E01",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E02",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E03",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E04",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E05",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E06",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E07",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E08",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E09",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E10",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E11",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E12",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E13",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E14",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E15",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E16",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E17",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E18",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E19",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E20",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E21",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E22",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E23",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E24",
+      "classe": "CAP IFCA 2"
+    },
+    {
+      "pseudo": "E25",
+      "classe": "CAP IFCA 2 (TEST)"
+    },
+    {
+      "pseudo": "E26",
+      "classe": "CAP IFCA 2 (TEST)"
+    },
+    {
+      "pseudo": "E27",
+      "classe": "CAP IFCA 2 (TEST)"
+    }
   ]
 }

@@ -1,13 +1,12 @@
 {
   "_meta": {
-    "description": "Table E0X → NOM Prénom (chiffrée AES-256-GCM) pour CCF EP2 CAP IFCA",
+    "description": "Table E0X → NOM Prénom (chiffrée AES-256-GCM) — CCF EP2 CAP IFCA",
     "algo": "AES-256-GCM avec PBKDF2(100000 itérations, SHA-256)",
-    "password_hint": "Mot de passe pédagogique court — donné par F. Henninot",
-    "nb_eleves": 24,
-    "chiffre_le": "2026-05-17T12:18:35.948Z",
-    "note": "Noms complets (NOM + Prénom) extraits feuille présence officielle"
+    "nb_eleves": 27,
+    "chiffre_le": "2026-05-17T14:56:12.949Z",
+    "note": "24 vrais élèves + 3 TESTS (E25, E26, E27)"
   },
-  "salt": "FwXZbybPH0fjq2Sse7oVJw==",
-  "iv": "nwl4PjY9kO4+bleI",
-  "ciphertext": "U+w0RbAApO2nVqLfoj0pwplNL2eDvg89NUQGRgo/UhwDrrENsSShfHduneJ1U1+8NTVeWcPdDdF2lgCc/t5A5Ia5OM/a3Rut9B3xt9PnroXby5YxPrjhX040AHsS7XAQ5cHPRedkmr50s7W0luP37bXDZdAxbZdNReag32yG9End95ed0J3BsJCuCvQjrZSKtXOtdR69Rc4yJ8r4SKqn0+/fNnciAZt8b3N3VeBktfpP/ffJJAyz7Jo7PTHo/bJrXZ6EiRPfIbeBSL9hP8lY9C/Scd8PI7eM+8/zf8zgAL2682fOzYxjZZljccRf1aTO+9XOmVYs6jA8EmIZaPfsJtor7K2eS+mJiDqja8/Gdcye2WUmVVvJ/5BWzjjrMba38allndXCIVbdF64wYYy+hirQYTxNLxE0HC5yH6GEpw2LqSi/lQAmNF4t9AGMMxxaiRAW3gBrwajNMTwUNkFeDbHji2QCZ/kxnreAtIvX4rO1dq6ullKawoBF2NlfQq5tAHmTIuFsFSYlz4CyZjQJ6/cbdvaduZtQfwx25pXzH6M+an13M5MVChidJghEyp1RkabA26U0M01KBGHtfd5EaRFwEhPauJ5FWJu6ZkgXhES7uCnAnjTbqEDdnfLPpOmF5qKvrjFho6wj0zk6P2G7i1IXxOEsY72Q4vhtbV/8VSUwvlE3DHUJeDVssFlRztRr7f8aRUYCvRiXysAnvaPJEprqYRpmBiJTHK8lY6GfjI8b5yVEudRT+Lf9n5A="
+  "salt": "CvMYn5FeYgPBNaYlbSAbdw==",
+  "iv": "rI/WdfOB0lXnwZd2",
+  "ciphertext": "emrS3j+0U/wlBa1VGLf/blI4yX9OIBGgRBjGGmhYvmo2au2IjsryRuyuam5qRdC61DdUiv4N5qLCZNY3Rrc2WrQz0TCDkfzDsW8CxZ77IibU8feBwNt8cHX49WGXQ4Z8kF8Ra3AtKbFbyvPNheWFzUluhv3Y0lQYa4hDRp9fzWI1obsoRcddkZaDr2vln92UguWfBqSURas/oypOmIUjNUrckm6qdwsbNkIa+qXGvTewvYY8NxQgxbj0aTa1G14QD/fO033Cqwtrxk3H7mcR0LtMp0lA3C0LGtTb88SJFPoo+ImXp14cQCqxzpYfeFT+x/5bJQt4ULKfu05oHJ9FRfFXl7wrngxjA0H3Hpdvnv0MoD6QcCKJVu0F8Za+kN3bU75leABavElL20aVYMyoEj5xVZncESYfs6KRVLN79A5djj1dzSETYUZepXu23IXIFpiOzV3bkRIRRqHDfuXWzLRBb2abaeN92DwrfYW/lpLFETN9J+BD9QeiIDiotJV9gQlzwsI3L0Z1cowFrYt3ZnVeueb6VXEhnPGI26iOb5H/b9/o+c0jFuB0V69xAIvN80xdGwqOT63ag9PfhD4PSco6qlcmFqm4ALJpYh/EXy2pPphVOu90eYUsPcLrWbarQr+pA22Nz92bygIUaPj9t6WkO/jxz+Q0vxSUwXf0h0rN3bH51y8384zi27cBA5pVS+8fnQ9wRi9Hya5T/4gO2PtaQih1DEU28bFcablVI5DlK3xyLSsd4e6VnQsymgwMTzPankHa9HjakkRwqzUxQJo2iMU0lW8Yr0PEHdpDXYQkhwK/vE6MNTfDVipyNvI6ksf0dxfA0mEehYbVh2pdDidlovEKBUSee0rW/yABoAOwHDV/SOAmuKBzUhhXil4="
 }

@@ -29,6 +29,7 @@ var SHEETS = {
   NOTES: 'Notes',
   PHOTOS: 'Photos',
   SIGNATURES: 'Signatures',
+  PDF_BILANS: 'PDF_Bilans',
   LOG: '_AUDIT_LOG'
 };
 
@@ -37,6 +38,7 @@ var SCHEMAS = {
   Notes: ['Timestamp', 'Eleve', 'Epreuve', 'TacheId', 'Niveau', 'Points', 'PointsMax', 'Comp', 'NoteFinale20', 'TotalBrut', 'TotalMax', 'Prof', 'Version', 'Saisie_JSON'],
   Photos: ['Timestamp', 'Eleve', 'Epreuve', 'Filename', 'DriveUrl', 'DriveFileId', 'Prof', 'Version'],
   Signatures: ['Timestamp', 'Eleve', 'Epreuve', 'TypeSig', 'DriveUrl', 'DriveFileId', 'Prof', 'Version'],
+  PDF_Bilans: ['Timestamp', 'Eleve', 'NoteFaco20', 'NoteElec20', 'NoteFinale20', 'DriveUrl', 'DriveFileId', 'Prof', 'Version'],
   '_AUDIT_LOG': ['Timestamp', 'Action', 'Eleve', 'Epreuve', 'Prof', 'Result', 'Detail']
 };
 
@@ -59,6 +61,7 @@ function doPost(e) {
       case 'pushNote':        resp = pushNote(ss, payload); break;
       case 'uploadPhoto':     resp = uploadPhoto(ss, payload); break;
       case 'uploadSignature': resp = uploadSignature(ss, payload); break;
+      case 'uploadPdf':       resp = uploadPdf(ss, payload); break;
       case 'getCurrent':      resp = getCurrent(ss, payload); break;
       case 'getAttachments':  resp = getAttachments(ss, payload); break;
       case 'status':          resp = status(ss); break;
@@ -244,6 +247,60 @@ function uploadSignature(ss, p) {
 
   _logAudit(ss, 'uploadSignature', p.eleve, p.epreuve, p.prof, 'OK', 'type=' + p.typeSig);
   return { ok: true, version: version, driveUrl: file.getUrl(), driveFileId: file.getId() };
+}
+
+/**
+ * uploadPdf : sauve un PDF de bilan complet (les 2 EP fusionnés) dans Drive.
+ * Payload : { eleve, prof, noteFaco20, noteElec20, noteFinale20, dataBase64 (PDF) }
+ * Le PDF est sauvé dans Drive/<DRIVE_FOLDER>/<eleve>/PDFs/bilan_<eleve>_<timestamp>.pdf
+ * Append-only : chaque appel crée un nouveau PDF, jamais d'écrasement.
+ */
+function uploadPdf(ss, p) {
+  var sh = ss.getSheetByName(SHEETS.PDF_BILANS);
+  var ts = new Date();
+  var folderEleve = _getDriveSubFolder(p.eleve);
+  /* Sous-sous-dossier PDFs/ */
+  var pdfFolder;
+  var iter = folderEleve.getFoldersByName('PDFs');
+  if (iter.hasNext()) pdfFolder = iter.next();
+  else pdfFolder = folderEleve.createFolder('PDFs');
+
+  var fileName = 'bilan_' + p.eleve + '_' + ts.toISOString().replace(/[:.]/g, '-') + '.pdf';
+
+  var b64 = (p.dataBase64 || '').replace(/^data:application\/pdf;base64,/, '').replace(/^data:[^;]+;base64,/, '');
+  if (!b64) return { ok: false, error: 'DATA_VIDE' };
+  var blob = Utilities.newBlob(Utilities.base64Decode(b64), 'application/pdf', fileName);
+
+  var file = pdfFolder.createFile(blob);
+  file.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW);
+
+  var version = _nextPdfVersion(sh, p.eleve);
+  sh.appendRow([
+    ts,
+    p.eleve,
+    p.noteFaco20 || '',
+    p.noteElec20 || '',
+    p.noteFinale20 || '',
+    file.getUrl(),
+    file.getId(),
+    p.prof || '',
+    version
+  ]);
+
+  _logAudit(ss, 'uploadPdf', p.eleve, 'BILAN', p.prof, 'OK', 'v' + version + ' note=' + p.noteFinale20 + ' file=' + fileName);
+  return { ok: true, version: version, driveUrl: file.getUrl(), driveFileId: file.getId() };
+}
+
+function _nextPdfVersion(sh, eleve) {
+  var data = sh.getDataRange().getValues();
+  var maxV = 0;
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][1] === eleve) {
+      var v = parseInt(data[i][8], 10);
+      if (v > maxV) maxV = v;
+    }
+  }
+  return maxV + 1;
 }
 
 /**

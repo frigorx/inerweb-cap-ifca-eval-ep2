@@ -294,8 +294,9 @@
       <div class="formula">= (Façonnage + Électrique) ÷ 2</div>
     </div>
     <div class="actions">
-      <button class="btn-print"  id="btn-print">🖨 Imprimer</button>
-      <button class="btn-export" id="btn-export">📋 Copier bilan</button>
+      <button class="btn-print"  id="btn-print"  title="Imprimer en PDF via le navigateur">🖨 Imprimer</button>
+      <button class="btn-pdf"    id="btn-pdf"    style="background:#38a169;color:#fff;border-color:#38a169;" title="Générer le bilan PDF officiel et le sauver dans Drive">📄 Sauver bilan Drive</button>
+      <button class="btn-export" id="btn-export" title="Copier le bilan texte dans le presse-papier">📋 Copier texte</button>
       <span class="ep2-saved-tag" id="saved-tag">💾 enregistré</span>
     </div>
   </div>
@@ -347,6 +348,7 @@
 <script src="js/notes-sync.js"></script>
 <script src="js/sync-drive.js"></script>
 <script src="js/config-modal.js"></script>
+<script src="js/pdf-export.js"></script>
 
 <script>
 (function() {
@@ -384,6 +386,7 @@
     document.getElementById('btn-clear-eleve').onclick = clearAll;
     document.getElementById('btn-print').onclick     = () => window.print();
     document.getElementById('btn-export').onclick    = copyBilan;
+    document.getElementById('btn-pdf').onclick       = saveBilanPdf;
     document.getElementById('btn-toggle-crits').onclick = toggleCompact;
     document.getElementById('btn-config').onclick    = () => window.ConfigModal && ConfigModal.open();
 
@@ -409,6 +412,16 @@
 
   /* ========== CHANGEMENT D'ÉLÈVE ========== */
   function switchEleve(idCloud) {
+    /* AUTO-EXPORT PDF : si on quitte un élève qui avait des saisies, on génère son bilan d'abord */
+    if (currentEleve && currentEleve !== idCloud) {
+      const hasSaisies = Object.keys(saisies.ep2faco || {}).length > 0 || Object.keys(saisies.ep2elec || {}).length > 0;
+      if (hasSaisies && window.PdfExport) {
+        /* On lance l'export en arrière-plan, on n'attend pas (l'utilisateur peut continuer) */
+        PdfExport.generateAndSave(currentEleve, baremes, saisies, { silent: true })
+          .then(r => console.log('[Auto-PDF] sauvegardé pour', currentEleve, r))
+          .catch(e => console.warn('[Auto-PDF] échec pour', currentEleve, e));
+      }
+    }
     currentEleve = idCloud;
     loadAllSaisies();
     if (!currentEleve) {
@@ -848,7 +861,37 @@
       document.body.classList.contains('mode-compact') ? '📋 Afficher critères' : '📋 Mode compact';
   }
 
-  /* ========== EXPORT BILAN ========== */
+  /* ========== EXPORT BILAN PDF (Drive) ========== */
+  function saveBilanPdf() {
+    if (!currentEleve) { alert("Sélectionne d'abord un élève."); return; }
+    if (!window.PdfExport) { alert('Module PDF non chargé'); return; }
+    const hasSaisies = Object.keys(saisies.ep2faco || {}).length > 0 || Object.keys(saisies.ep2elec || {}).length > 0;
+    if (!hasSaisies) {
+      if (!confirm("Aucune saisie pour cet élève. Générer un bilan vide quand même ?")) return;
+    }
+    /* Désactiver temporairement le bouton */
+    const btn = document.getElementById('btn-pdf');
+    const oldText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '⏳ Génération…';
+    PdfExport.generateAndSave(currentEleve, baremes, saisies, { silent: false })
+      .then(r => {
+        btn.textContent = oldText;
+        btn.disabled = false;
+        if (r.driveUrl) {
+          if (confirm("✓ Bilan PDF sauvé dans Drive (v" + r.version + ").\n\nOuvrir le fichier dans un nouvel onglet ?")) {
+            window.open(r.driveUrl, '_blank');
+          }
+        }
+      })
+      .catch(err => {
+        btn.textContent = oldText;
+        btn.disabled = false;
+        alert('Erreur génération PDF : ' + err.message);
+      });
+  }
+
+  /* ========== EXPORT BILAN TEXTE ========== */
   function copyBilan() {
     if (!currentEleve) { alert("Sélectionne d'abord un élève."); return; }
     const rFaco = CCF.compute(baremes.ep2faco, saisies.ep2faco);

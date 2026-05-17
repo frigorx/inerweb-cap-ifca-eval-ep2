@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Installation backend — inerWeb CCF EP2</title>
+<style>
+body { font-family: Calibri, sans-serif; font-size: 13pt; line-height: 1.6; color: #1a2332; max-width: 880px; margin: 0 auto; padding: 30px 20px; background: #f4f6fa; }
+h1 { color: #1b3a63; font-family: 'Trebuchet MS', sans-serif; border-bottom: 4px solid #ff6b35; padding-bottom: 10px; margin-bottom: 4px; }
+.sub { color: #666; font-size: 11pt; margin-bottom: 24px; }
+h2 { color: #1b3a63; font-family: 'Trebuchet MS', sans-serif; margin-top: 32px; padding: 10px 14px; background: #ff6b35; color: #fff; border-radius: 6px 6px 0 0; font-size: 14pt; }
+.step { background: #fff; padding: 16px 22px; border-radius: 0 0 8px 8px; margin-bottom: 14px; border: 1px solid #e0e4ea; border-top: 0; }
+code { background: #f4f6fa; padding: 2px 6px; border-radius: 3px; font-family: Consolas, monospace; color: #1b3a63; }
+pre { background: #1b3a63; color: #fff; padding: 14px; border-radius: 6px; overflow-x: auto; font-size: 11pt; line-height: 1.45; }
+.warn { background: #fff8e1; border-left: 5px solid #dd6b20; padding: 10px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+.ok { background: #f0fff4; border-left: 5px solid #38a169; padding: 10px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+.tip { background: #ebf4ff; border-left: 5px solid #1b3a63; padding: 10px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; font-size: 11pt; }
+ul, ol { padding-left: 22px; }
+li { margin-bottom: 4px; }
+a { color: #ff6b35; font-weight: 700; }
+table { border-collapse: collapse; width: 100%; margin: 10px 0; background: #fff; }
+th, td { border: 1px solid #cbd5e0; padding: 8px 12px; text-align: left; }
+th { background: #1b3a63; color: #fff; }
+kbd { background: #fff; border: 1px solid #cbd5e0; border-bottom-width: 2px; padding: 1px 6px; border-radius: 3px; font-family: Consolas, monospace; font-size: 10pt; }
+.tag { display: inline-block; background: #1b3a63; color: #fff; padding: 1px 9px; border-radius: 3px; font-size: 10pt; font-weight: 700; margin-right: 6px; }
+</style>
+</head>
+<body>
+
+<h1>🛠 Installation backend inerWeb CCF EP2</h1>
+<p class="sub">5 étapes, ~5 minutes. Tout le code est déjà écrit, tu fais juste les clics côté Google.</p>
+
+<div class="ok">
+  <strong>✓ Ce qui est déjà fait :</strong> tout le code (HTML / JS / Apps Script). Tu n'as RIEN à coder.
+</div>
+
+<div class="warn">
+  <strong>⚠ Pré-requis :</strong> être connecté avec ton compte <code>inerweb.fh@gmail.com</code> dans le navigateur.
+</div>
+
+<h2><span class="tag">1</span>Créer le Google Sheet (30 sec)</h2>
+<div class="step">
+  <ol>
+    <li>Va sur <a href="https://sheets.new" target="_blank">https://sheets.new</a> (raccourci pour créer un Sheet vide).</li>
+    <li>Renomme-le : <code>inerWeb_CCF_EP2_2026</code> (clic sur "Feuille de calcul sans titre" en haut à gauche).</li>
+    <li><strong>Ne touche à rien d'autre.</strong> Les feuilles seront créées automatiquement par le script.</li>
+  </ol>
+</div>
+
+<h2><span class="tag">2</span>Ouvrir l'éditeur Apps Script (10 sec)</h2>
+<div class="step">
+  <ol>
+    <li>Dans le Sheet : menu <kbd>Extensions</kbd> > <kbd>Apps Script</kbd>.</li>
+    <li>Un nouvel onglet s'ouvre avec un projet vide nommé "Sans titre".</li>
+    <li>Renomme le projet (en haut à gauche) : <code>inerWeb_CCF_EP2_Backend</code>.</li>
+  </ol>
+</div>
+
+<h2><span class="tag">3</span>Coller le code (30 sec)</h2>
+<div class="step">
+  <ol>
+    <li>Dans l'éditeur Apps Script, <strong>efface tout</strong> le code par défaut (Ctrl+A puis Suppr).</li>
+    <li>Ouvre le fichier <code>apps-script/Code.gs</code> de ce projet (sur ton PC).</li>
+    <li>Copie tout son contenu (Ctrl+A, Ctrl+C) et colle-le dans l'éditeur Apps Script (Ctrl+V).</li>
+    <li><strong>Modifie la clé API</strong> (ligne 22) : remplace <code>EP2-2026-fh-changeMe</code> par une chaîne que tu choisis (ex : <code>EP2-2026-fh-mavraikeySecrete</code>). <strong>Note-la</strong>, tu en auras besoin à l'étape 5.</li>
+    <li>Enregistre (icône disquette ou Ctrl+S).</li>
+  </ol>
+  <div class="tip">
+    💡 Tu peux aussi copier le contenu de <code>apps-script/appsscript.json</code> dans le fichier du même nom (clic sur ⚙ en haut à gauche dans Apps Script > "Afficher le fichier de configuration appsscript.json"). C'est facultatif mais ça donne le bon fuseau horaire.
+  </div>
+</div>
+
+<h2><span class="tag">4</span>Déployer comme application web (1 min)</h2>
+<div class="step">
+  <ol>
+    <li>Bouton <kbd>Déployer</kbd> (en haut à droite) > <kbd>Nouveau déploiement</kbd>.</li>
+    <li>Clique sur l'engrenage ⚙ à gauche > sélectionne <kbd>Application Web</kbd>.</li>
+    <li>Renseigne :
+      <ul>
+        <li><strong>Description</strong> : <code>v1 EP2 2026</code></li>
+        <li><strong>Exécuter en tant que</strong> : <code>Moi (inerweb.fh@gmail.com)</code></li>
+        <li><strong>Qui a accès</strong> : <code>Tout le monde</code> (oui, vraiment — c'est la clé API qui protège)</li>
+      </ul>
+    </li>
+    <li>Clique <kbd>Déployer</kbd>.</li>
+    <li>Une fenêtre d'autorisation s'ouvre :
+      <ul>
+        <li>Clique <kbd>Autoriser l'accès</kbd></li>
+        <li>Choisis ton compte <code>inerweb.fh@gmail.com</code></li>
+        <li>Ignore l'avertissement "non vérifié" → <kbd>Avancé</kbd> > <kbd>Accéder à inerWeb_CCF_EP2_Backend (non sécurisé)</kbd></li>
+        <li>Accepte tous les scopes (Sheets + Drive)</li>
+      </ul>
+    </li>
+    <li>Une fois déployé, <strong>COPIE l'URL d'application web</strong> qui s'affiche (commence par <code>https://script.google.com/macros/s/...</code> et finit par <code>/exec</code>).</li>
+  </ol>
+  <div class="ok">
+    🎯 Cette URL est ce qu'il faut brancher dans l'app à l'étape 5.
+  </div>
+</div>
+
+<h2><span class="tag">5</span>Brancher l'app sur le backend (30 sec)</h2>
+<div class="step">
+  <ol>
+    <li>Ouvre <a href="index.html">l'app inerWeb EP2</a>.</li>
+    <li>Au premier lancement, le modal <strong>Configuration backend</strong> s'ouvre tout seul.</li>
+    <li>Remplis :
+      <ul>
+        <li><strong>URL Apps Script</strong> : colle l'URL copiée à l'étape 4 (finit par <code>/exec</code>)</li>
+        <li><strong>Clé API</strong> : la chaîne que tu as choisie à l'étape 3 (ex : <code>EP2-2026-fh-mavraikeySecrete</code>)</li>
+        <li><strong>Tes initiales</strong> : <code>FH</code></li>
+      </ul>
+    </li>
+    <li>Clique <kbd>🔍 Tester la connexion</kbd>.</li>
+    <li>Si tu vois <strong>✓ Connexion OK</strong> avec la liste des feuilles → <kbd>💾 Enregistrer</kbd>.</li>
+    <li>Le bouton "⚠ Config" en haut à droite devient <strong>"✓ Config"</strong> vert.</li>
+  </ol>
+</div>
+
+<h2>🎉 C'est fini</h2>
+<div class="step">
+  <p>Maintenant à chaque saisie :</p>
+  <ul>
+    <li>📊 <strong>Note</strong> → poussée automatiquement dans la feuille <code>Notes</code> du Sheet (append-only avec versionnage)</li>
+    <li>📷 <strong>Photo</strong> → uploadée dans <code>Drive/inerWeb_Photos_CCF_EP2_2026/&lt;pseudo&gt;/</code> + lien dans la feuille <code>Photos</code></li>
+    <li>✍ <strong>Signature</strong> → idem dans <code>Drive/.../&lt;pseudo&gt;/</code> + feuille <code>Signatures</code></li>
+    <li>📜 <strong>Audit</strong> → toutes les actions loguées dans la feuille <code>_AUDIT_LOG</code></li>
+  </ul>
+</div>
+
+<h2>🆘 En cas de souci</h2>
+<div class="step">
+  <table>
+    <tr><th>Symptôme</th><th>Solution</th></tr>
+    <tr><td>"⚠ Config" reste orange après save</td><td>Recharger la page (F5)</td></tr>
+    <tr><td>Test connexion échoue avec "CLE_API_INVALIDE"</td><td>La clé saisie ne correspond pas à <code>CLE_API</code> dans Code.gs. Re-vérifie ligne 22.</td></tr>
+    <tr><td>Test connexion échoue avec HTTP_404</td><td>L'URL est mauvaise. Doit finir par <code>/exec</code> (et non <code>/dev</code>).</td></tr>
+    <tr><td>"Erreur 401/403" lors d'un upload</td><td>Redéploie l'Apps Script (Déployer > Gérer les déploiements > engrenage > nouvelle version).</td></tr>
+    <tr><td>Le badge "📎 X en attente sync" reste élevé</td><td>Backend en panne ou URL invalide. Les pièces sont en sécurité dans IndexedDB (localement). Re-tester la config.</td></tr>
+    <tr><td>Tu veux voir l'audit</td><td>Ouvre le Sheet, onglet <code>_AUDIT_LOG</code></td></tr>
+    <tr><td>Tu veux changer la clé API</td><td>Modifie ligne 22 du Code.gs, redéploie (Nouveau déploiement, garder la même URL), puis modifie la config dans l'app</td></tr>
+  </table>
+</div>
+
+<h2>🔐 Sécurité &amp; RGPD</h2>
+<div class="step">
+  <ul>
+    <li>Les vrais noms d'élèves ne sont JAMAIS envoyés au Sheet/Drive — uniquement les pseudos (<code>ABadis</code>, etc.)</li>
+    <li>La table de correspondance pseudo↔vrai nom reste sur ton PC uniquement (USB côté prof maître)</li>
+    <li>Photos : conserve la consigne "pas de visages dans le cadre" lors de la prise. Si un visage passe, supprime la photo et reprend.</li>
+    <li>Le Drive est partagé "lien visible par l'établissement" → Lakhera y a accès, pas les élèves</li>
+    <li>Suppression automatique fin d'année : à faire manuellement le 31/08 (supprimer le dossier Drive + archiver une copie du Sheet)</li>
+  </ul>
+</div>
+
+<p style="margin-top:40px;font-size:10pt;color:#888;text-align:center;">
+  inerWeb Édu · par F. Henninot · LP Privé Jacques Raynaud · Campus ÉQUATIO<br>
+  Version backend V1-2026-05-17
+</p>
+
+</body>
+</html>

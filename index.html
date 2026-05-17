@@ -255,7 +255,8 @@
     <span class="flake">❄</span>
     <h1>inerWeb <span class="badge-edu">Édu</span> Eval CAP IFCA — EP2 (Façonnage + Électrique)</h1>
     <span class="sig">par F. Henninot · LP Privé Jacques Raynaud · Campus ÉQUATIO</span>
-    <span style="margin-left:auto;font-size:10pt;opacity:0.85;" id="sync-pending">📎 0 en attente sync</span>
+    <span style="margin-left:auto;font-size:10pt;opacity:0.85;" id="sync-pending">📎 init…</span>
+    <button id="btn-config" type="button" style="background:#dd6b20;color:#fff;border:0;padding:6px 14px;border-radius:4px;font-weight:700;cursor:pointer;font-size:11pt;font-family:inherit;" title="Configurer backend Apps Script">⚠ Config</button>
   </div>
 
   <div class="ep2-pick">
@@ -342,6 +343,10 @@
 
 <script src="js/v2/ccf-engine.js"></script>
 <script src="js/attachments.js"></script>
+<script src="js/api-client.js"></script>
+<script src="js/notes-sync.js"></script>
+<script src="js/sync-drive.js"></script>
+<script src="js/config-modal.js"></script>
 
 <script>
 (function() {
@@ -380,6 +385,11 @@
     document.getElementById('btn-print').onclick     = () => window.print();
     document.getElementById('btn-export').onclick    = copyBilan;
     document.getElementById('btn-toggle-crits').onclick = toggleCompact;
+    document.getElementById('btn-config').onclick    = () => window.ConfigModal && ConfigModal.open();
+
+    /* Démarrage : modal config si pas branché + sync auto */
+    if (window.ConfigModal) ConfigModal.autoOpenIfNeeded();
+    if (window.SyncDrive) SyncDrive.startAuto();
 
     /* Onglets */
     document.getElementById('tabs-bar').addEventListener('click', (e) => {
@@ -412,6 +422,35 @@
     document.getElementById('tabs-bar').hidden = false;
     renderActive();
     refreshFinalBanner();
+    /* Si backend configuré : récupérer la dernière version distante (info, pas de merge auto) */
+    if (window.NotesSync && window.Api && Api.isConfigured()) {
+      EPREUVES.forEach(ep => {
+        NotesSync.fetchCurrent(idCloud, ep).then(remote => {
+          if (remote && remote.version) {
+            console.log('[NotesSync] dernière version distante pour', idCloud, ep, ':', 'v' + remote.version, 'par', remote.prof);
+            /* Si la saisie locale est différente, afficher un bandeau d'avertissement */
+            _checkRemoteConflict(idCloud, ep, remote);
+          }
+        });
+      });
+    }
+  }
+
+  function _checkRemoteConflict(eleve, epreuve, remote) {
+    const localKeys = Object.keys(saisies[epreuve] || {}).sort().join(',');
+    const remoteKeys = Object.keys(remote.saisie || {}).sort().join(',');
+    if (localKeys === remoteKeys) return; /* identique ou tous les deux vides */
+    if (localKeys === '') {
+      /* Rien en local, on adopte le distant en silence */
+      saisies[epreuve] = remote.saisie || {};
+      CCF.save(epreuve, eleve, saisies[epreuve], remote.prof || 'FH');
+      console.log('[NotesSync] adopté saisie distante pour', eleve, epreuve);
+      if (epreuve === activeTab) renderActive();
+      refreshFinalBanner();
+    } else {
+      console.warn('[NotesSync] conflit local/distant pour', eleve, epreuve, '— le prof devrait être prévenu');
+      /* TODO : bandeau visuel pour annoncer "FH a saisi v3, tu as v?, fusionner ?" */
+    }
   }
 
   function loadAllSaisies() {
@@ -580,19 +619,25 @@
         if (rec) {
           refreshAttachThumbs();
           updateSyncPendingBadge();
+          window.dispatchEvent(new Event('attach-added')); /* trigger SyncDrive */
         }
-        e.target.value = ''; /* reset pour pouvoir reprendre la même */
+        e.target.value = '';
       });
     };
-    /* Boutons signature */
     card.querySelector('[data-act="sign-eleve"]').onclick = () => {
       Attach.openSignatureModal(currentEleve, activeTab, 'signature_eleve').then(rec => {
-        if (rec) { refreshAttachThumbs(); updateSyncPendingBadge(); }
+        if (rec) {
+          refreshAttachThumbs(); updateSyncPendingBadge();
+          window.dispatchEvent(new Event('attach-added'));
+        }
       });
     };
     card.querySelector('[data-act="sign-prof"]').onclick = () => {
       Attach.openSignatureModal(currentEleve, activeTab, 'signature_prof').then(rec => {
-        if (rec) { refreshAttachThumbs(); updateSyncPendingBadge(); }
+        if (rec) {
+          refreshAttachThumbs(); updateSyncPendingBadge();
+          window.dispatchEvent(new Event('attach-added'));
+        }
       });
     };
   }
@@ -772,8 +817,11 @@
     if (!currentEleve) return;
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
-      CCF.save(activeTab, currentEleve, saisies[activeTab], 'FH');
+      const profCode = (window.Api && Api.getConfig && Api.getConfig().prof) || 'FH';
+      CCF.save(activeTab, currentEleve, saisies[activeTab], profCode);
       flashSaved();
+      /* Push vers Apps Script si configuré */
+      if (window.NotesSync) NotesSync.schedulePush(currentEleve, activeTab, baremes[activeTab], saisies[activeTab]);
     }, DEBOUNCE_MS);
   }
 

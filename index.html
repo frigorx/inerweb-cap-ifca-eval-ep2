@@ -243,6 +243,24 @@
     }
     .attach-thumbs .thumb-del:hover { background: #9b2c2c; }
 
+    /* Badge "depuis un autre appareil" + bouton ouvrir Drive */
+    .attach-thumbs .thumb-wrap.is-remote img { border: 2px solid #3182ce; }
+    .attach-thumbs .thumb-remote {
+      position: absolute; bottom: -3px; right: -3px;
+      background: #3182ce; color: #fff;
+      padding: 1px 5px; border-radius: 8px;
+      font-size: 11pt; line-height: 1.2;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    .attach-thumbs .thumb-drive {
+      position: absolute; top: -5px; right: -5px;
+      background: #3182ce; color: #fff; width: 18px; height: 18px;
+      border-radius: 50%; font-size: 10pt; line-height: 18px; text-align: center;
+      cursor: pointer; font-weight: 700; box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      text-decoration: none;
+    }
+    .attach-thumbs .thumb-drive:hover { background: #2c5282; }
+
     .attach-status {
       margin-top: 8px; padding: 6px 10px; border-radius: 4px;
       font-size: 10pt; text-align: center; font-weight: 700;
@@ -832,6 +850,10 @@
       <div class="attach-card">
         <h3>📎 Pièces jointes ${activeTab === 'ep2faco' ? 'Façonnage' : 'Électrique'}
           <span class="req-badge">recommandé avant validation</span>
+          <button type="button" id="btn-refresh-attach" title="Rafraîchir depuis Drive (utile si tu as pris des photos depuis ton téléphone)"
+            style="margin-left:auto;background:#3182ce;color:#fff;border:0;padding:5px 12px;border-radius:4px;cursor:pointer;font-size:10pt;font-weight:700;font-family:inherit;">
+            🔄 Rafraîchir (📱 multi-appareil)
+          </button>
         </h3>
         <div class="attach-row">
           <div class="attach-slot" data-slot="photo">
@@ -864,6 +886,19 @@
   function wireAttach() {
     const card = document.querySelector('.attach-card');
     if (!card) return;
+    /* Bouton "Rafraîchir" → re-fetch depuis Drive */
+    const btnRefresh = card.querySelector('#btn-refresh-attach');
+    if (btnRefresh) {
+      btnRefresh.onclick = () => {
+        btnRefresh.textContent = '⏳ Refresh…';
+        btnRefresh.disabled = true;
+        refreshAttachThumbs();
+        setTimeout(() => {
+          btnRefresh.textContent = '🔄 Rafraîchir (📱 multi-appareil)';
+          btnRefresh.disabled = false;
+        }, 1500);
+      };
+    }
     /* Bouton "Prendre une photo" → trigger input file */
     card.querySelector('[data-act="add-photo"]').onclick = () => {
       card.querySelector('[data-input="photo"]').click();
@@ -900,7 +935,9 @@
 
   function refreshAttachThumbs() {
     if (!currentEleve) return;
-    Attach.list(currentEleve, activeTab).then(items => {
+    /* Multi-appareil : fusion local + distant (PC voit photos prises sur téléphone et inversement) */
+    const fn = (window.Attach && Attach.listMerged) ? Attach.listMerged : Attach.list;
+    fn(currentEleve, activeTab).then(items => {
       const card = document.querySelector('.attach-card');
       if (!card) return;
       ['photo', 'signature_eleve', 'signature_prof'].forEach(type => {
@@ -914,25 +951,46 @@
           status.className = 'attach-status warn';
           status.textContent = type === 'photo' ? '⚠ Aucune photo' : '⚠ Non signé';
         } else {
-          wrap.innerHTML = filtered.map(it => `
-            <div class="thumb-wrap">
-              <img src="${it.thumb || it.data}" data-view-id="${it.id}" title="Clic pour agrandir" />
-              <span class="thumb-del" data-del-id="${it.id}" title="Supprimer">×</span>
-            </div>
-          `).join('');
+          /* Affichage avec badge "📱" pour les items distants (depuis téléphone) */
+          wrap.innerHTML = filtered.map(it => {
+            const isRemote = it.source === 'remote';
+            const isLocalString = typeof it.id === 'string';
+            const idAttr = isLocalString ? '' : `data-view-id="${it.id}"`;
+            const remoteBadge = isRemote
+              ? `<span class="thumb-remote" title="Depuis un autre appareil (téléphone)">📱</span>`
+              : '';
+            const delBtn = !isRemote
+              ? `<span class="thumb-del" data-del-id="${it.id}" title="Supprimer">×</span>`
+              : `<a class="thumb-drive" href="${it.driveUrl}" target="_blank" title="Ouvrir dans Drive">↗</a>`;
+            const clickAction = isRemote
+              ? `onclick="window.open('${it.driveUrl}','_blank')"`
+              : `data-view-id="${it.id}"`;
+            return `
+              <div class="thumb-wrap${isRemote ? ' is-remote' : ''}">
+                <img src="${it.thumb || it.data}" ${clickAction} title="${isRemote ? 'Photo distante — clic pour ouvrir dans Drive' : 'Clic pour agrandir'}" />
+                ${remoteBadge}
+                ${delBtn}
+              </div>
+            `;
+          }).join('');
           slot.classList.add('done');
           status.className = 'attach-status ok';
+          const nbRemote = filtered.filter(it => it.source === 'remote').length;
+          const remoteInfo = nbRemote > 0 ? ` (${nbRemote} 📱)` : '';
           status.textContent = type === 'photo'
-            ? `✓ ${filtered.length} photo${filtered.length > 1 ? 's' : ''} jointe${filtered.length > 1 ? 's' : ''}`
-            : '✓ Signé · ' + new Date(filtered[filtered.length - 1].date).toLocaleString('fr-FR', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
-          /* Wiring viewer + delete */
+            ? `✓ ${filtered.length} photo${filtered.length > 1 ? 's' : ''}${remoteInfo}`
+            : '✓ Signé · ' + new Date(filtered[filtered.length - 1].date).toLocaleString('fr-FR', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) + remoteInfo;
+          /* Wiring viewer (local only) + delete (local only) */
           wrap.querySelectorAll('[data-view-id]').forEach(img => {
-            img.onclick = () => Attach.viewFullscreen(parseInt(img.dataset.viewId, 10));
+            const id = img.dataset.viewId;
+            if (typeof id === 'string' && !id.startsWith('remote-')) {
+              img.onclick = () => Attach.viewFullscreen(parseInt(id, 10));
+            }
           });
           wrap.querySelectorAll('[data-del-id]').forEach(btn => {
             btn.onclick = (e) => {
               e.stopPropagation();
-              if (!confirm('Supprimer cette pièce jointe ?')) return;
+              if (!confirm('Supprimer cette pièce jointe (locale) ?')) return;
               Attach.remove(parseInt(btn.dataset.delId, 10)).then(() => {
                 refreshAttachThumbs();
                 updateSyncPendingBadge();

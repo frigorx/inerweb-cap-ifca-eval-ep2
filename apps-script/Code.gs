@@ -375,6 +375,10 @@ function getAttachments(ss, p) {
   var shS = ss.getSheetByName(SHEETS.SIGNATURES);
   var photos = _filterAndMap(shP, p.eleve, p.epreuve, ['timestamp', 'eleve', 'epreuve', 'filename', 'driveUrl', 'driveFileId', 'prof', 'version']);
   var signatures = _filterAndMap(shS, p.eleve, p.epreuve, ['timestamp', 'eleve', 'epreuve', 'typeSig', 'driveUrl', 'driveFileId', 'prof', 'version']);
+  /* Ajout thumbUrl preview Drive (format public sans auth si DRIVE_SHARING_MODE='LINK',
+     sinon nécessite que le visualiseur soit logué sur le compte du déployeur) */
+  photos.forEach(function(p) { p.thumbUrl = 'https://drive.google.com/thumbnail?id=' + p.driveFileId + '&sz=w200'; });
+  signatures.forEach(function(s) { s.thumbUrl = 'https://drive.google.com/thumbnail?id=' + s.driveFileId + '&sz=w200'; });
   return { ok: true, photos: photos, signatures: signatures };
 }
 

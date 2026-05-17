@@ -312,9 +312,75 @@
     return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  /**
+   * listMerged : combine attachements LOCAUX (IndexedDB) + DISTANTS (Drive via Apps Script).
+   * Permet à un PC de voir les photos prises depuis un téléphone (et inversement).
+   * Dédoublonne par driveFileId.
+   *
+   * @returns Promise<[{...}]> avec champ "source" = 'local' | 'remote'
+   */
+  function listMerged(eleve, epreuve) {
+    return list(eleve, epreuve).then(function(localItems) {
+      /* Marquer source = local */
+      localItems.forEach(function(it) { it.source = 'local'; });
+      /* Tenter de récupérer la liste distante (si backend configuré) */
+      if (!window.Api || !window.Api.isConfigured()) return localItems;
+      return window.Api.call('getAttachments', { eleve: eleve, epreuve: epreuve })
+        .then(function(r) {
+          if (!r || !r.ok) return localItems;
+          var remoteItems = [];
+          /* Photos distantes */
+          (r.photos || []).forEach(function(p) {
+            remoteItems.push({
+              id: 'remote-photo-' + p.driveFileId,
+              eleve: eleve,
+              epreuve: epreuve,
+              type: 'photo',
+              date: p.timestamp,
+              thumb: p.thumbUrl,
+              data: p.thumbUrl, /* fallback pour viewFullscreen */
+              driveUrl: p.driveUrl,
+              driveFileId: p.driveFileId,
+              filename: p.filename,
+              prof: p.prof,
+              version: p.version,
+              source: 'remote'
+            });
+          });
+          /* Signatures distantes */
+          (r.signatures || []).forEach(function(s) {
+            remoteItems.push({
+              id: 'remote-sig-' + s.driveFileId,
+              eleve: eleve,
+              epreuve: epreuve,
+              type: s.typeSig || 'signature_eleve',
+              date: s.timestamp,
+              thumb: s.thumbUrl,
+              data: s.thumbUrl,
+              driveUrl: s.driveUrl,
+              driveFileId: s.driveFileId,
+              prof: s.prof,
+              version: s.version,
+              source: 'remote'
+            });
+          });
+          /* Dédoublonnage : un item local déjà synchronisé a un driveUrl,
+             on garde la version LOCALE (plus riche en data base64 pour aperçu) */
+          var localDriveIds = new Set(localItems.filter(function(it) { return it.driveFileId; }).map(function(it) { return it.driveFileId; }));
+          var uniqueRemote = remoteItems.filter(function(it) { return !localDriveIds.has(it.driveFileId); });
+          return localItems.concat(uniqueRemote);
+        })
+        .catch(function(err) {
+          console.warn('[Attach.listMerged] échec récup distant:', err.message);
+          return localItems; /* fallback : on garde au moins le local */
+        });
+    });
+  }
+
   /* ========== API ========== */
   window.Attach = {
     list: list,
+    listMerged: listMerged,
     remove: remove,
     addPhoto: addPhoto,
     addSignature: addSignature,

@@ -1,0 +1,43 @@
+{
+  "_meta": {
+    "version": "2.0",
+    "description": "Liste des pseudos élèves CAP IFCA — format 1re lettre nom + prénom complet",
+    "lastUpdate": "2026-04-26",
+    "rgpd": "Le prénom est visible dans le pseudo (choix prof). La correspondance Pseudo → Nom complet est dans data/correspondance_eleves.json (gitignored, USB côté prof maître uniquement). Le Sheet ne reçoit que le pseudo.",
+    "format_pseudo": "1re lettre du nom de famille (casse préservée) + prénom complet"
+  },
+  "classes": {
+    "CAP_IFCA_2": [
+      "ABadis", "AYacine", "BAbderahim", "BKaïss", "BIyad", "CDainis",
+      "DRïad", "DMathys", "DSouleymane", "FRyad", "GBartosz", "KYoussouf",
+      "KYanis", "MFrédéric", "MMyrone", "NFrancis", "ONabil", "OHerve",
+      "SAnes", "TAli", "bjibril", "adavid", "flancinet", "adriss"
+    ]
+  },
+  "eleves": [
+    { "pseudo": "ABadis",      "classe": "CAP IFCA 2" },
+    { "pseudo": "AYacine",     "classe": "CAP IFCA 2" },
+    { "pseudo": "BAbderahim",  "classe": "CAP IFCA 2" },
+    { "pseudo": "BKaïss",      "classe": "CAP IFCA 2" },
+    { "pseudo": "BIyad",       "classe": "CAP IFCA 2" },
+    { "pseudo": "CDainis",     "classe": "CAP IFCA 2" },
+    { "pseudo": "DRïad",       "classe": "CAP IFCA 2" },
+    { "pseudo": "DMathys",     "classe": "CAP IFCA 2" },
+    { "pseudo": "DSouleymane", "classe": "CAP IFCA 2" },
+    { "pseudo": "FRyad",       "classe": "CAP IFCA 2" },
+    { "pseudo": "GBartosz",    "classe": "CAP IFCA 2" },
+    { "pseudo": "KYoussouf",   "classe": "CAP IFCA 2" },
+    { "pseudo": "KYanis",      "classe": "CAP IFCA 2" },
+    { "pseudo": "MFrédéric",   "classe": "CAP IFCA 2" },
+    { "pseudo": "MMyrone",     "classe": "CAP IFCA 2" },
+    { "pseudo": "NFrancis",    "classe": "CAP IFCA 2" },
+    { "pseudo": "ONabil",      "classe": "CAP IFCA 2" },
+    { "pseudo": "OHerve",      "classe": "CAP IFCA 2" },
+    { "pseudo": "SAnes",       "classe": "CAP IFCA 2" },
+    { "pseudo": "TAli",        "classe": "CAP IFCA 2" },
+    { "pseudo": "bjibril",     "classe": "CAP IFCA 2" },
+    { "pseudo": "adavid",      "classe": "CAP IFCA 2" },
+    { "pseudo": "flancinet",   "classe": "CAP IFCA 2" },
+    { "pseudo": "adriss",      "classe": "CAP IFCA 2" }
+  ]
+}

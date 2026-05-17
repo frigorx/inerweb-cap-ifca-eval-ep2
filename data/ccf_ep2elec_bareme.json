@@ -1,0 +1,328 @@
+{
+  "_doc": "Barème CCF EP2 — Raccordement Électrique (CAP IFCA). Source : CCF_EP2_GRILLE_FINALE_100pts_COMPLETE.docx. Mapping ALIGNÉ STRICT sur référentiel CAP IFCA UP2 : seules C1.2 et C3.1→C3.9 sont évaluables en EP2. Tâches sécurité/EPI/organisation → C3.1 (Travailler en sécurité, gérer outillage). Implantation composants sur platine → C3.3 (Implanter, fixer équipements). Câblage → C3.6. Contrôle visuel + test fonctionnement → C3.7. Explication orale → C1.2. Fin de chantier → C3.8. NB : la somme réelle des sous-critères vaut 115 pts (le récap DOCX d'origine indique /105 par erreur d'addition) — on retient 115 pour fiabilité.",
+  "epreuve": "EP2-ELEC",
+  "intitule": "✅ CCF EP2 — Raccordement Électrique",
+  "session": "2025/26",
+  "version_bareme": "V2-2026-05-17",
+  "duree_h": 3.5,
+  "coef": 4,
+  "total_max": 115,
+  "diviseur_note_finale": 115,
+  "ramene_sur": 20,
+  "sous_epreuves": [
+    { "code": "EP2-ELEC", "label": "Raccordement électrique complet", "coef": 1, "couleur": "#1b3a63", "blocs": ["A", "B", "C", "D", "E"], "competences_cles": ["C1.2", "C3.1", "C3.3", "C3.6", "C3.7", "C3.8"] }
+  ],
+  "niveaux": [
+    { "code": "NA", "label": "Non acquis",          "couleur": "#c53030", "indice": 0 },
+    { "code": "EC", "label": "En cours",            "couleur": "#dd6b20", "indice": 1 },
+    { "code": "A",  "label": "Acquis",              "couleur": "#38a169", "indice": 2 },
+    { "code": "PA", "label": "Parfaitement acquis", "couleur": "#1b3a63", "indice": 3 }
+  ],
+  "blocs": [
+    {
+      "code": "A",
+      "label": "Préparation — EPI + organisation + vérification",
+      "max": 8,
+      "couleur": "#1b3a63",
+      "intro": "Port des EPI dès l'entrée, organisation poste (caisse rangée, passage dégagé), vérification matériel et schémas.",
+      "taches": [
+        {
+          "id": "A-1",
+          "intitule": "Port des EPI (lunettes, gants, chaussures)",
+          "comp": "C3.1",
+          "critere": "Travailler en sécurité : port continu des EPI électriques adaptés",
+          "max": 3,
+          "niveaux": [0, 1, 2, 3],
+          "indicateurs": {
+            "NA": "EPI non portés.",
+            "EC": "EPI partiels (1 ou 2 manquants).",
+            "A":  "Tous les EPI portés.",
+            "PA": "EPI parfaits, posture sécurité exemplaire."
+          }
+        },
+        {
+          "id": "A-2",
+          "intitule": "Organisation poste (caisse sous établi, propre, dégagé)",
+          "comp": "C3.1",
+          "critere": "Maintenir la zone de travail propre et ordonnée ; gérer l'outillage",
+          "max": 3,
+          "niveaux": [0, 1, 2, 3],
+          "indicateurs": {
+            "NA": "Bordel total. Caisse non rangée, passage encombré.",
+            "EC": "Caisse mal rangée. Poste désordonné.",
+            "A":  "Poste correct. Caisse sous établi.",
+            "PA": "Impeccable. Zone parfaitement organisée."
+          }
+        },
+        {
+          "id": "A-3",
+          "intitule": "Vérification matériel — platine, câbles (noir/bleu/rouge), schémas",
+          "comp": "C3.1",
+          "critere": "Gérer l'outillage : vérifier disponibilité et état avant intervention",
+          "max": 2,
+          "niveaux": [0, 1, 1, 2],
+          "indicateurs": {
+            "NA": "Pas fait.",
+            "EC": "Vérification partielle.",
+            "A":  "Vérification faite, anomalies signalées.",
+            "PA": "Vérification méthodique et complète."
+          }
+        }
+      ]
+    },
+    {
+      "code": "B",
+      "label": "Implantation des composants",
+      "max": 15,
+      "couleur": "#2d8659",
+      "intro": "Lecture du schéma d'implantation, identification des symboles normalisés, positionnement précis des composants et borniers sur la platine.",
+      "taches": [
+        {
+          "id": "B-1",
+          "intitule": "Implantation conforme — composants au bon endroit",
+          "comp": "C3.3",
+          "critere": "Implanter, fixer les équipements conformément au plan d'implantation",
+          "max": 15,
+          "niveaux": [0, 5, 10, 15],
+          "indicateurs": {
+            "NA": "5 composants ou + mal placés. Plan non respecté.",
+            "EC": "3 à 4 composants mal placés.",
+            "A":  "1 à 2 composants mal placés.",
+            "PA": "0 erreur — implantation parfaite conformément au plan."
+          }
+        }
+      ]
+    },
+    {
+      "code": "C",
+      "label": "Câblage puissance + commande",
+      "max": 47,
+      "couleur": "#dd6b20",
+      "intro": "Puissance (câbles noirs, repères N/L1/L2/L3) et commande (bleus/rouges, numéros fils, contacts NO/NF). Conformité, serrages, cuivre apparent, esthétique.",
+      "taches": [
+        {
+          "id": "C-1",
+          "intitule": "Puissance — conformité au schéma",
+          "comp": "C3.6",
+          "critere": "Câbler conformément au schéma de puissance (N, L1, L2, L3)",
+          "max": 9,
+          "niveaux": [0, 3, 6, 9],
+          "indicateurs": {
+            "NA": "4 erreurs ou plus de câblage.",
+            "EC": "2 à 3 erreurs.",
+            "A":  "1 erreur.",
+            "PA": "0 erreur — câblage strictement conforme."
+          }
+        },
+        {
+          "id": "C-2",
+          "intitule": "Puissance — serrages (câbles non arrachés)",
+          "comp": "C3.6",
+          "critere": "Réaliser les connexions correctes et conformes (serrage au couple)",
+          "max": 7,
+          "niveaux": [0, 2, 4, 7],
+          "indicateurs": {
+            "NA": "4 câbles arrachés ou plus.",
+            "EC": "2 à 3 câbles arrachés au test.",
+            "A":  "1 câble arraché.",
+            "PA": "0 câble arraché — serrages parfaits."
+          }
+        },
+        {
+          "id": "C-3",
+          "intitule": "Puissance — pas de cuivre apparent",
+          "comp": "C3.6",
+          "critere": "Connexions sécurisées : isolation conservée au-delà du bornier",
+          "max": 3,
+          "niveaux": [0, 1, 2, 3],
+          "indicateurs": {
+            "NA": "4 bornes ou plus avec cuivre apparent.",
+            "EC": "2 à 3 bornes avec cuivre apparent.",
+            "A":  "1 borne avec cuivre apparent.",
+            "PA": "0 cuivre apparent — finition pro."
+          }
+        },
+        {
+          "id": "C-4",
+          "intitule": "Puissance — esthétique (propre, pas spaghetti)",
+          "comp": "C3.6",
+          "critere": "Câbles rangés, préparés, repérés et fixés conformément",
+          "max": 3,
+          "niveaux": [0, 1, 2, 3],
+          "indicateurs": {
+            "NA": "Spaghetti — câbles en vrac.",
+            "EC": "Moyen — quelques croisements.",
+            "A":  "Propre — câbles alignés.",
+            "PA": "Joli — câblage exemplaire, rangé."
+          }
+        },
+        {
+          "id": "C-5",
+          "intitule": "Commande — conformité au schéma",
+          "comp": "C3.6",
+          "critere": "Câbler conformément au schéma de commande (numéros fils, NO/NF)",
+          "max": 9,
+          "niveaux": [0, 3, 6, 9],
+          "indicateurs": {
+            "NA": "4 erreurs ou plus de câblage.",
+            "EC": "2 à 3 erreurs.",
+            "A":  "1 erreur.",
+            "PA": "0 erreur — câblage strictement conforme."
+          }
+        },
+        {
+          "id": "C-6",
+          "intitule": "Commande — serrages (câbles non arrachés)",
+          "comp": "C3.6",
+          "critere": "Connexions correctes au couple, contacts NO/NF respectés",
+          "max": 7,
+          "niveaux": [0, 2, 4, 7],
+          "indicateurs": {
+            "NA": "4 câbles arrachés ou plus.",
+            "EC": "2 à 3 câbles arrachés.",
+            "A":  "1 câble arraché.",
+            "PA": "0 câble arraché — serrages parfaits."
+          }
+        },
+        {
+          "id": "C-7",
+          "intitule": "Commande — pas de cuivre apparent",
+          "comp": "C3.6",
+          "critere": "Isolation conservée, sécurité électrique au-delà des borniers",
+          "max": 3,
+          "niveaux": [0, 1, 2, 3],
+          "indicateurs": {
+            "NA": "4 bornes ou plus avec cuivre apparent.",
+            "EC": "2 à 3 bornes.",
+            "A":  "1 borne.",
+            "PA": "0 cuivre apparent."
+          }
+        },
+        {
+          "id": "C-8",
+          "intitule": "Commande — esthétique / organisation",
+          "comp": "C3.6",
+          "critere": "Câbles repérés, rangés, identifiables (entretien futur facilité)",
+          "max": 3,
+          "niveaux": [0, 1, 2, 3],
+          "indicateurs": {
+            "NA": "Spaghetti.",
+            "EC": "Moyen.",
+            "A":  "Propre.",
+            "PA": "Joli — rangement exemplaire."
+          }
+        },
+        {
+          "id": "C-9",
+          "intitule": "Contrôle visuel — auto-contrôle avant mise sous tension",
+          "comp": "C3.7",
+          "critere": "Vérifier polarité, respect schéma, mise à la terre AVANT enclenchement",
+          "max": 3,
+          "niveaux": [0, 1, 2, 3],
+          "indicateurs": {
+            "NA": "Pas d'auto-contrôle.",
+            "EC": "Contrôle partiel.",
+            "A":  "Contrôle fait, corrections apportées.",
+            "PA": "Contrôle méthodique et complet avant tension."
+          }
+        }
+      ]
+    },
+    {
+      "code": "D",
+      "label": "Test sous tension + explication orale",
+      "max": 35,
+      "couleur": "#1b3a63",
+      "intro": "Mise sous tension sécurisée (prévenance examinateur, EPI), fonctionnement compresseur / condenseur / EV, explication orale du fonctionnement.",
+      "taches": [
+        {
+          "id": "D-1",
+          "intitule": "Sécurité (EPI + prévenance examinateur avant tension)",
+          "comp": "C3.1",
+          "critere": "Travailler en sécurité : signaler avant enclenchement, EPI portés",
+          "max": 5,
+          "niveaux": [0, 2, 4, 5],
+          "indicateurs": {
+            "NA": "Non respecté — enclenchement sans prévenir, EPI absents.",
+            "EC": "1 manquement (EPI ou prévenance).",
+            "A":  "Respecté — prévient examinateur, EPI OK.",
+            "PA": "Exemplaire — méthode pro stricte (prévenance, EPI, vérif autour)."
+          }
+        },
+        {
+          "id": "D-2",
+          "intitule": "Fonctionnement compresseur",
+          "comp": "C3.7",
+          "critere": "Vérifier mise en œuvre équipement : compresseur démarre et fonctionne",
+          "max": 10,
+          "niveaux": [0, 3, 7, 10],
+          "indicateurs": {
+            "NA": "Ne marche pas — câblage en cause.",
+            "EC": "Démarre partiellement / par à-coups.",
+            "A":  "Fonctionne — démarrage et marche OK.",
+            "PA": "Parfait — fonctionnement nominal, pas de bruit anormal."
+          }
+        },
+        {
+          "id": "D-3",
+          "intitule": "Fonctionnement condenseur / électrovanne",
+          "comp": "C3.7",
+          "critere": "Vérifier mise en œuvre : ventilateur condenseur + EV fonctionnent",
+          "max": 10,
+          "niveaux": [0, 3, 7, 10],
+          "indicateurs": {
+            "NA": "Ne marche pas.",
+            "EC": "Partiel (1 sur 2 fonctionne).",
+            "A":  "Fonctionne — les 2 organes marchent.",
+            "PA": "Parfait — synchronisation correcte, séquence respectée."
+          }
+        },
+        {
+          "id": "D-4",
+          "intitule": "Explication orale — fonctionnement clair et complet",
+          "comp": "C1.2",
+          "critere": "Expliquer un fonctionnement : informations orales claires, vocabulaire technique adapté",
+          "max": 10,
+          "niveaux": [0, 4, 7, 10],
+          "indicateurs": {
+            "NA": "Confus — pas capable d'expliquer.",
+            "EC": "Partiel — explique quelques étapes seulement.",
+            "A":  "Clair — explique le fonctionnement global.",
+            "PA": "Parfait — vocabulaire pro, séquence complète, anticipe les questions."
+          }
+        }
+      ]
+    },
+    {
+      "code": "E",
+      "label": "Fin de chantier",
+      "max": 10,
+      "couleur": "#7c3aed",
+      "intro": "Décâblage platine, tri/recyclage câbles, établi propre, sol propre.",
+      "taches": [
+        {
+          "id": "E-1",
+          "intitule": "Fin de chantier globale (décâblé, trié, propre)",
+          "comp": "C3.8",
+          "critere": "Trier, valoriser les déchets ; poste rendu propre (sol + établi)",
+          "max": 10,
+          "niveaux": [0, 3, 6, 10],
+          "indicateurs": {
+            "NA": "Parti sans rien ranger.",
+            "EC": "Poste rangé, sol sale, tri non fait.",
+            "A":  "Platine décâblée, poste propre, tri OK.",
+            "PA": "Tout parfaitement rangé, sol et établi impeccables, tri complet."
+          }
+        }
+      ]
+    }
+  ],
+  "competences": {
+    "C1.2": "Communiquer avec les acteurs : expliquer un fonctionnement, une intervention",
+    "C3.1": "Organiser le poste de travail (travailler en sécurité, gérer outillage, zone propre)",
+    "C3.3": "Implanter, manutentionner, fixer les supportages et équipements",
+    "C3.6": "Câbler, repérer, connecter les liaisons électriques et électroniques",
+    "C3.7": "Contrôler la mise en œuvre des équipements électriques et fluidiques",
+    "C3.8": "Trier, valoriser les déchets"
+  }
+}

@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>inerWeb Eval CAP IFCA — EP2 (Façonnage + Électrique)</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/v2.css" />
+  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='28'>%E2%9D%84</text></svg>" />
+  <style>
+    body { background: #f4f6fa; font-family: 'Calibri', sans-serif; }
+    .ep2-wrap { max-width: 1320px; margin: 0 auto; padding: 16px; }
+
+    .ep2-banner {
+      background: linear-gradient(90deg, #1b3a63 0%, #2d5d8c 100%);
+      color: #fff; padding: 14px 22px; border-radius: 8px; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .ep2-banner .flake { font-size: 22pt; }
+    .ep2-banner h1 { font-size: 17pt; font-family: 'Trebuchet MS', sans-serif; margin: 0; }
+    .ep2-banner .badge-edu { background: #ff6b35; color: #fff; padding: 2px 10px; border-radius: 4px; font-size: 10pt; font-weight: 700; }
+    .ep2-banner .proto-tag { background: #fff; color: #1b3a63; padding: 4px 12px; border-radius: 4px; font-size: 10pt; font-weight: 700; }
+    .ep2-banner .sig { font-size: 10pt; opacity: 0.85; }
+    .ep2-banner a { color: #fff; text-decoration: underline; font-size: 11pt; margin-left: auto; }
+
+    .ep2-pick {
+      background: #fff; padding: 14px 18px; border-radius: 8px; margin-bottom: 14px;
+      display: grid; grid-template-columns: 2fr auto auto; gap: 14px; align-items: end;
+      border: 1px solid #e0e4ea;
+    }
+    .ep2-pick label { display: block; font-size: 10pt; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+    .ep2-pick select, .ep2-pick input { width: 100%; padding: 8px 10px; font-size: 12pt; border: 1px solid #cbd5e0; border-radius: 4px; font-family: inherit; }
+    .ep2-pick button {
+      background: #f4f6fa; color: #555; border: 1px solid #cbd5e0;
+      padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 11pt;
+    }
+    .ep2-pick button:hover { background: #ffe8e0; color: #c53030; border-color: #c53030; }
+    .ep2-pick button.toggle-crits { background: #fff8e1; color: #b7791f; border-color: #ed8936; }
+    .ep2-pick button.toggle-crits.active { background: #ed8936; color: #fff; }
+
+    /* ===== Bandeau note finale (2 EP2 + moyenne) ===== */
+    .ep2-final-banner {
+      background: #fff; padding: 18px 22px; border-radius: 8px; margin-bottom: 14px;
+      border: 3px solid #1b3a63;
+      display: grid; grid-template-columns: 1fr 1fr 1.4fr auto; gap: 16px; align-items: center;
+    }
+    .ep2-final-banner .sub-note {
+      text-align: center; padding: 10px 12px; border-radius: 6px;
+      background: #f4f6fa; border-left: 5px solid #ccc;
+    }
+    .ep2-final-banner .sub-note.faco { border-left-color: #1b3a63; }
+    .ep2-final-banner .sub-note.elec { border-left-color: #ed8936; }
+    .ep2-final-banner .sub-note .lbl { font-size: 10pt; color: #555; text-transform: uppercase; letter-spacing: 0.3px; font-weight: 700; margin-bottom: 2px; }
+    .ep2-final-banner .sub-note .val { font-size: 26pt; font-weight: 800; color: #1b3a63; font-family: 'Trebuchet MS', sans-serif; line-height: 1; }
+    .ep2-final-banner .sub-note .val .sur { font-size: 12pt; color: #888; font-weight: 400; }
+    .ep2-final-banner .sub-note .pts { font-size: 9pt; color: #888; margin-top: 4px; }
+
+    .ep2-final-banner .total-note {
+      background: #1b3a63; color: #fff; padding: 16px 18px; border-radius: 6px; text-align: center;
+    }
+    .ep2-final-banner .total-note .lbl { font-size: 10pt; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 700; margin-bottom: 4px; }
+    .ep2-final-banner .total-note .val { font-size: 38pt; font-weight: 800; line-height: 1; font-family: 'Trebuchet MS', sans-serif; }
+    .ep2-final-banner .total-note .val .sur { font-size: 14pt; opacity: 0.7; font-weight: 400; }
+    .ep2-final-banner .total-note .formula { font-size: 9pt; opacity: 0.8; margin-top: 4px; }
+
+    .ep2-final-banner .actions { display: flex; flex-direction: column; gap: 6px; }
+    .ep2-final-banner .actions button { padding: 8px 14px; font-size: 11pt; border-radius: 4px; cursor: pointer; border: 1px solid; font-family: inherit; font-weight: 700; }
+    .ep2-final-banner .btn-print  { background: #1b3a63; color: #fff; border-color: #1b3a63; }
+    .ep2-final-banner .btn-export { background: #ff6b35; color: #fff; border-color: #ff6b35; }
+    .ep2-final-banner .btn-reset  { background: #fff; color: #c53030; border-color: #c53030; }
+
+    .ep2-saved-tag {
+      display: inline-block; background: #38a169; color: #fff; padding: 2px 8px;
+      border-radius: 3px; font-size: 10pt; opacity: 0; transition: opacity 0.3s;
+    }
+    .ep2-saved-tag.visible { opacity: 1; }
+
+    /* ===== Onglets Faco/Elec ===== */
+    .ep2-tabs {
+      display: flex; gap: 4px; margin-bottom: 0; padding: 0 4px;
+    }
+    .ep2-tabs button {
+      background: #e0e4ea; border: 0; padding: 12px 22px; font-size: 13pt; font-weight: 700;
+      cursor: pointer; border-radius: 8px 8px 0 0; color: #555;
+      font-family: 'Trebuchet MS', sans-serif;
+    }
+    .ep2-tabs button.active { background: #fff; color: #1b3a63; border-bottom: 3px solid #ff6b35; }
+    .ep2-tabs button .mini-note {
+      background: #1b3a63; color: #fff; padding: 1px 8px; border-radius: 10px;
+      font-size: 10pt; margin-left: 8px; vertical-align: middle;
+    }
+    .ep2-tabs button.active .mini-note { background: #ff6b35; }
+
+    .ep2-empty-state { background: #fff; padding: 40px; border-radius: 8px; text-align: center; color: #888; font-size: 13pt; border: 2px dashed #cbd5e0; }
+
+    /* ===== Bloc strip et compétences ===== */
+    .ep2-bloc-strip { background: #fff; padding: 12px 18px; border-radius: 0 8px 0 0; margin-bottom: 14px; display: flex; gap: 12px; flex-wrap: wrap; border: 1px solid #e0e4ea; border-top: 0; }
+    .ep2-bloc-strip .chip { padding: 6px 12px; border-radius: 4px; font-size: 11pt; font-weight: 700; color: #fff; }
+
+    .ep2-comp-card { background: #fff; padding: 14px 18px; border-radius: 8px; margin-bottom: 14px; border: 1px solid #e0e4ea; }
+    .ep2-comp-card h3 { font-size: 13pt; color: #1b3a63; font-family: 'Trebuchet MS', sans-serif; margin: 0 0 10px; }
+    .ep2-comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+    .ep2-comp-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #f4f6fa; border-radius: 4px; border-left: 4px solid #ccc; }
+    .ep2-comp-row .lbl { font-size: 11pt; color: #333; }
+    .ep2-comp-row .lbl strong { color: #1b3a63; font-size: 12pt; }
+    .ep2-comp-row .lbl small { display: block; font-size: 9pt; color: #777; font-style: italic; }
+    .ep2-comp-row .pct { font-weight: 700; font-size: 13pt; white-space: nowrap; }
+    .ep2-comp-row.lvl-NA { border-left-color: #c53030; } .ep2-comp-row.lvl-NA .pct { color: #c53030; }
+    .ep2-comp-row.lvl-EC { border-left-color: #dd6b20; } .ep2-comp-row.lvl-EC .pct { color: #dd6b20; }
+    .ep2-comp-row.lvl-A  { border-left-color: #38a169; } .ep2-comp-row.lvl-A .pct  { color: #38a169; }
+    .ep2-comp-row.lvl-PA { border-left-color: #1b3a63; } .ep2-comp-row.lvl-PA .pct { color: #1b3a63; }
+
+    /* ===== Grille critériée ENRICHIE ===== */
+    .crit-grille-wrap { display: flex; flex-direction: column; gap: 14px; }
+    .crit-bloc {
+      background: #fff; border-radius: 8px; border: 1px solid #e0e4ea;
+      border-left: 6px solid #1b3a63; overflow: hidden;
+    }
+    .crit-bloc-hdr {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 16px; background: #f4f6fa;
+    }
+    .crit-bloc-hdr strong { font-size: 13pt; color: #1b3a63; font-family: 'Trebuchet MS', sans-serif; }
+    .crit-bloc-hdr .pts { font-size: 11pt; color: #555; font-weight: 700; }
+    .crit-bloc-intro { font-size: 11pt; color: #555; padding: 8px 16px; background: #fafbfd; font-style: italic; }
+
+    .crit-tache {
+      border-top: 1px solid #e0e4ea;
+      padding: 12px 16px;
+    }
+    .crit-tache-head {
+      display: grid; grid-template-columns: auto 1fr auto auto;
+      gap: 10px; align-items: center; margin-bottom: 8px;
+    }
+    .crit-tache-id { background: #1b3a63; color: #fff; padding: 3px 9px; border-radius: 4px; font-weight: 700; font-size: 10pt; }
+    .crit-tache-title { font-size: 12pt; font-weight: 700; color: #1b3a63; line-height: 1.3; }
+    .crit-tache-comp { background: #f4f6fa; border: 1px solid #cbd5e0; padding: 3px 10px; border-radius: 4px; font-weight: 700; font-size: 10pt; color: #1b3a63; }
+    .crit-tache-pts { font-weight: 700; font-size: 11pt; color: #555; text-align: right; min-width: 70px; }
+    .crit-tache-pts.done { color: #38a169; }
+
+    .crit-tache-critere {
+      background: #fffbeb; border-left: 4px solid #ff6b35;
+      padding: 6px 12px; margin-bottom: 8px;
+      font-size: 11pt; color: #555;
+    }
+    .crit-tache-critere strong { color: #b7791f; }
+
+    .crit-niveaux {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+    }
+    .crit-niveau-cell {
+      border: 2px solid #e0e4ea; border-radius: 6px; padding: 8px 10px;
+      cursor: pointer; transition: all 0.15s; background: #fff;
+      display: flex; flex-direction: column; gap: 4px; min-height: 80px;
+    }
+    .crit-niveau-cell:hover { background: #fff8e1; border-color: #ff6b35; transform: translateY(-1px); }
+    .crit-niveau-cell .niv-head { display: flex; justify-content: space-between; align-items: center; }
+    .crit-niveau-cell .niv-code { font-weight: 800; font-size: 11pt; }
+    .crit-niveau-cell .niv-pts { background: #f4f6fa; padding: 1px 7px; border-radius: 3px; font-weight: 700; font-size: 10pt; color: #555; }
+    .crit-niveau-cell .niv-desc { font-size: 10pt; color: #555; line-height: 1.35; }
+
+    .crit-niveau-cell.lvl-NA .niv-code { color: #c53030; }
+    .crit-niveau-cell.lvl-EC .niv-code { color: #dd6b20; }
+    .crit-niveau-cell.lvl-A  .niv-code { color: #38a169; }
+    .crit-niveau-cell.lvl-PA .niv-code { color: #1b3a63; }
+
+    .crit-niveau-cell.selected { border-width: 3px; padding: 7px 9px; }
+    .crit-niveau-cell.selected.lvl-NA { background: #fff5f5; border-color: #c53030; }
+    .crit-niveau-cell.selected.lvl-EC { background: #fffaf0; border-color: #dd6b20; }
+    .crit-niveau-cell.selected.lvl-A  { background: #f0fff4; border-color: #38a169; }
+    .crit-niveau-cell.selected.lvl-PA { background: #ebf4ff; border-color: #1b3a63; }
+    .crit-niveau-cell.selected .niv-pts { background: #fff; }
+
+    /* Mode COMPACT (toggle "Masquer critères détaillés") */
+    body.mode-compact .crit-tache-critere { display: none; }
+    body.mode-compact .crit-niveau-cell { min-height: auto; }
+    body.mode-compact .crit-niveau-cell .niv-desc { display: none; }
+    body.mode-compact .crit-niveau-cell { padding: 4px 8px; }
+
+    /* ===== Pièces jointes (photos + signatures) ===== */
+    .attach-card {
+      background: #fff; padding: 16px 20px; border-radius: 8px; margin-bottom: 14px;
+      border: 2px solid #ff6b35;
+    }
+    .attach-card h3 {
+      font-size: 14pt; color: #1b3a63; font-family: 'Trebuchet MS', sans-serif;
+      margin: 0 0 12px; display: flex; align-items: center; gap: 10px;
+    }
+    .attach-card h3 .req-badge {
+      background: #fff3cd; color: #b7791f; padding: 2px 9px; border-radius: 3px;
+      font-size: 10pt; font-weight: 700;
+    }
+    .attach-row {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px;
+    }
+    .attach-slot {
+      border: 2px dashed #cbd5e0; border-radius: 6px; padding: 12px;
+      text-align: center; background: #fafbfd; transition: all 0.15s;
+    }
+    .attach-slot.done { border-style: solid; border-color: #38a169; background: #f0fff4; }
+    .attach-slot .icon { font-size: 22pt; line-height: 1; margin-bottom: 4px; }
+    .attach-slot .lbl { font-size: 11pt; font-weight: 700; color: #555; margin-bottom: 8px; }
+    .attach-slot .lbl small { display: block; font-size: 9pt; color: #888; font-weight: 400; margin-top: 2px; }
+    .attach-slot button {
+      background: #1b3a63; color: #fff; border: 0; padding: 8px 14px;
+      border-radius: 4px; font-size: 11pt; font-weight: 700; cursor: pointer;
+      font-family: inherit; width: 100%;
+    }
+    .attach-slot button:hover { background: #2d5d8c; }
+    .attach-slot.done button { background: #38a169; }
+    .attach-slot.done button:hover { background: #2f855a; }
+    .attach-slot input[type="file"] { display: none; }
+
+    .attach-thumbs {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; justify-content: center;
+    }
+    .attach-thumbs .thumb-wrap {
+      position: relative; display: inline-block;
+    }
+    .attach-thumbs img {
+      width: 60px; height: 60px; object-fit: cover; border-radius: 4px;
+      border: 1px solid #cbd5e0; cursor: zoom-in;
+    }
+    .attach-thumbs .thumb-del {
+      position: absolute; top: -5px; right: -5px;
+      background: #c53030; color: #fff; width: 18px; height: 18px;
+      border-radius: 50%; font-size: 11pt; line-height: 18px; text-align: center;
+      cursor: pointer; font-weight: 700; box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    .attach-thumbs .thumb-del:hover { background: #9b2c2c; }
+
+    .attach-status {
+      margin-top: 8px; padding: 6px 10px; border-radius: 4px;
+      font-size: 10pt; text-align: center; font-weight: 700;
+    }
+    .attach-status.warn { background: #fff8e1; color: #b7791f; }
+    .attach-status.ok   { background: #f0fff4; color: #2f855a; }
+
+    @media print {
+      body { background: #fff; }
+      .ep2-pick, .ep2-tabs, .ep2-banner a, .actions, .attach-slot button, .attach-slot input { display: none !important; }
+      .attach-thumbs img { width: 80px; height: 80px; }
+      .ep2-final-banner { break-inside: avoid; }
+      .crit-bloc { break-inside: avoid; page-break-inside: avoid; }
+      .crit-tache { break-inside: avoid; page-break-inside: avoid; }
+      .attach-card { break-inside: avoid; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ep2-wrap">
+
+  <div class="ep2-banner">
+    <span class="flake">❄</span>
+    <h1>inerWeb <span class="badge-edu">Édu</span> Eval CAP IFCA — EP2 (Façonnage + Électrique)</h1>
+    <span class="sig">par F. Henninot · LP Privé Jacques Raynaud · Campus ÉQUATIO</span>
+    <span style="margin-left:auto;font-size:10pt;opacity:0.85;" id="sync-pending">📎 0 en attente sync</span>
+  </div>
+
+  <div class="ep2-pick">
+    <div>
+      <label>Élève évalué (rattrapage CAP IFCA 2)</label>
+      <select id="pick-eleve">
+        <option value="">— Choisir un élève —</option>
+      </select>
+    </div>
+    <div>
+      <label>&nbsp;</label>
+      <button class="toggle-crits" id="btn-toggle-crits" title="Cacher / afficher les indicateurs détaillés NA/EC/A/PA pour gagner de la place">📋 Mode compact</button>
+    </div>
+    <div>
+      <label>&nbsp;</label>
+      <button id="btn-clear-eleve" title="Effacer toute la saisie pour cet élève (les 2 EP2)">↺ Tout effacer</button>
+    </div>
+  </div>
+
+  <!-- BANDEAU NOTE FINALE -->
+  <div class="ep2-final-banner" id="final-banner" hidden>
+    <div class="sub-note faco">
+      <div class="lbl">EP2 Façonnage</div>
+      <div class="val"><span id="note-faco">—</span><span class="sur"> / 20</span></div>
+      <div class="pts" id="pts-faco">— / 200 pts</div>
+    </div>
+    <div class="sub-note elec">
+      <div class="lbl">EP2 Électrique</div>
+      <div class="val"><span id="note-elec">—</span><span class="sur"> / 20</span></div>
+      <div class="pts" id="pts-elec">— / 115 pts</div>
+    </div>
+    <div class="total-note">
+      <div class="lbl">Note finale CCF EP2</div>
+      <div class="val"><span id="note-final">—</span><span class="sur"> / 20</span></div>
+      <div class="formula">= (Façonnage + Électrique) ÷ 2</div>
+    </div>
+    <div class="actions">
+      <button class="btn-print"  id="btn-print">🖨 Imprimer</button>
+      <button class="btn-export" id="btn-export">📋 Copier bilan</button>
+      <span class="ep2-saved-tag" id="saved-tag">💾 enregistré</span>
+    </div>
+  </div>
+
+  <!-- ONGLETS Faco/Elec -->
+  <div class="ep2-tabs" id="tabs-bar" hidden>
+    <button data-ep="ep2faco" class="active">🔧 Façonnage <span class="mini-note" id="tab-mini-faco">—/20</span></button>
+    <button data-ep="ep2elec">⚡ Électrique <span class="mini-note" id="tab-mini-elec">—/20</span></button>
+  </div>
+
+  <div id="grid-root">
+    <div class="ep2-empty-state">↑ Choisis un élève pour démarrer la saisie des 2 sous-épreuves CCF EP2.</div>
+  </div>
+
+</div>
+
+<!-- Petit Store autonome (compat ccf-engine.js qui appelle Store.get/set/remove) -->
+<script>
+  (function() {
+    'use strict';
+    const PFX = 'inerweb.cap-ifca-ep2.';
+    window.Store = {
+      get: function(k) { try { const v = localStorage.getItem(PFX + k); return v ? JSON.parse(v) : null; } catch(e) { return null; } },
+      set: function(k, v) { try { localStorage.setItem(PFX + k, JSON.stringify(v)); return true; } catch(e) { return false; } },
+      remove: function(k) { try { localStorage.removeItem(PFX + k); } catch(e) {} }
+    };
+    window.Catalog = {
+      _cache: {},
+      load: async function(file) {
+        if (this._cache[file]) return this._cache[file];
+        try {
+          const r = await fetch('data/' + file);
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          const j = await r.json();
+          this._cache[file] = j;
+          return j;
+        } catch(e) {
+          console.warn('[Catalog] échec', file, e);
+          return null;
+        }
+      }
+    };
+  })();
+</script>
+
+<script src="js/v2/ccf-engine.js"></script>
+<script src="js/attachments.js"></script>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ========== ÉTAT ========== */
+  const EPREUVES = ['ep2faco', 'ep2elec'];
+  const baremes = {};            /* { ep2faco: {...}, ep2elec: {...} } */
+  const saisies = { ep2faco: {}, ep2elec: {} };
+  let currentEleve = null;
+  let activeTab = 'ep2faco';
+  let elevesList = [];
+  let saveTimer = null;
+  const DEBOUNCE_MS = 400;
+
+  /* ========== BOOTSTRAP ========== */
+  async function init() {
+    /* Charger les 2 barèmes EN PARALLÈLE */
+    const [bFaco, bElec, jEleves] = await Promise.all([
+      CCF.load('ep2faco'),
+      CCF.load('ep2elec'),
+      Catalog.load('eleves_pseudo.json')
+    ]);
+    if (!bFaco || !bElec) {
+      document.getElementById('grid-root').innerHTML =
+        `<div class="ep2-empty-state" style="color:#c53030;border-color:#c53030;">⚠ Barème manquant : vérifier data/ccf_ep2faco_bareme.json et data/ccf_ep2elec_bareme.json</div>`;
+      return;
+    }
+    baremes.ep2faco = bFaco;
+    baremes.ep2elec = bElec;
+    elevesList = (jEleves && jEleves.eleves) || [];
+    fillEleveSelect();
+
+    document.getElementById('pick-eleve').onchange   = (e) => switchEleve(e.target.value || null);
+    document.getElementById('btn-clear-eleve').onclick = clearAll;
+    document.getElementById('btn-print').onclick     = () => window.print();
+    document.getElementById('btn-export').onclick    = copyBilan;
+    document.getElementById('btn-toggle-crits').onclick = toggleCompact;
+
+    /* Onglets */
+    document.getElementById('tabs-bar').addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-ep]');
+      if (!b) return;
+      activeTab = b.dataset.ep;
+      renderTabs();
+      renderActive();
+    });
+  }
+
+  function fillEleveSelect() {
+    const sel = document.getElementById('pick-eleve');
+    sel.innerHTML = '<option value="">— Choisir un élève (pseudo) —</option>' +
+      elevesList.map(e => `<option value="${e.pseudo}">${e.pseudo} (${e.classe})</option>`).join('');
+  }
+
+  /* ========== CHANGEMENT D'ÉLÈVE ========== */
+  function switchEleve(idCloud) {
+    currentEleve = idCloud;
+    loadAllSaisies();
+    if (!currentEleve) {
+      document.getElementById('final-banner').hidden = true;
+      document.getElementById('tabs-bar').hidden = true;
+      document.getElementById('grid-root').innerHTML =
+        '<div class="ep2-empty-state">↑ Choisis un élève pour démarrer la saisie des 2 sous-épreuves CCF EP2.</div>';
+      return;
+    }
+    document.getElementById('final-banner').hidden = false;
+    document.getElementById('tabs-bar').hidden = false;
+    renderActive();
+    refreshFinalBanner();
+  }
+
+  function loadAllSaisies() {
+    EPREUVES.forEach(ep => {
+      saisies[ep] = {};
+      if (!currentEleve) return;
+      const s = CCF.get(ep, currentEleve);
+      if (s && s.saisie) saisies[ep] = s.saisie;
+    });
+  }
+
+  /* ========== ONGLETS ========== */
+  function renderTabs() {
+    document.querySelectorAll('.ep2-tabs button').forEach(b => {
+      b.classList.toggle('active', b.dataset.ep === activeTab);
+    });
+  }
+
+  function renderActive() {
+    const bareme = baremes[activeTab];
+    const saisie = saisies[activeTab];
+    const root = document.getElementById('grid-root');
+    root.innerHTML =
+      renderBlocStrip(bareme, saisie) +
+      renderAttachCard() +
+      renderCompCard(bareme, saisie) +
+      renderBlocs(bareme, saisie);
+    wireBlocs();
+    wireAttach();
+    refreshAttachThumbs();
+    updateSyncPendingBadge();
+  }
+
+  function renderBlocStrip(bareme, saisie) {
+    const r = CCF.compute(bareme, saisie);
+    return `
+      <div class="ep2-bloc-strip">
+        <strong style="align-self:center;font-size:11pt;color:#555;">Points par bloc :</strong>
+        ${bareme.blocs.map(b => `
+          <span class="chip" style="background:${b.couleur}">
+            ${b.code} ${b.label} · ${r.pointsParBloc[b.code] || 0}/${b.max}
+          </span>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderCompCard(bareme, saisie) {
+    const r = CCF.compute(bareme, saisie);
+    const comps = Object.keys(r.maxParComp).sort();
+    if (comps.length === 0) {
+      return `<div class="ep2-comp-card"><h3>🎯 Niveau par compétence (référentiel CAP IFCA UP2)</h3>
+        <div style="color:#888;font-size:11pt;">Saisis quelques tâches pour voir les compétences mobilisées.</div></div>`;
+    }
+    const rows = comps.map(c => {
+      const pts = r.pointsParComp[c] || 0;
+      const max = r.maxParComp[c] || 1;
+      const pct = Math.round((pts / max) * 100);
+      let lvl = 'NA';
+      if (pct >= 86) lvl = 'PA';
+      else if (pct >= 61) lvl = 'A';
+      else if (pct >= 26) lvl = 'EC';
+      const lib = (bareme.competences && bareme.competences[c]) || c;
+      return `
+        <div class="ep2-comp-row lvl-${lvl}">
+          <span class="lbl"><strong>${c}</strong> · ${pts}/${max} pts<small>${escapeHtml(lib)}</small></span>
+          <span class="pct">${pct}% · ${lvl}</span>
+        </div>
+      `;
+    }).join('');
+    return `<div class="ep2-comp-card"><h3>🎯 Niveau par compétence (référentiel CAP IFCA UP2)</h3><div class="ep2-comp-grid">${rows}</div></div>`;
+  }
+
+  function renderBlocs(bareme, saisie) {
+    return `<div class="crit-grille-wrap">` + bareme.blocs.map(bloc => {
+      const r = CCF.compute(bareme, saisie);
+      return `
+      <section class="crit-bloc" style="border-left-color:${bloc.couleur}">
+        <header class="crit-bloc-hdr">
+          <strong style="color:${bloc.couleur}">Bloc ${bloc.code} — ${escapeHtml(bloc.label)}</strong>
+          <span class="pts">${r.pointsParBloc[bloc.code] || 0} / ${bloc.max} pts</span>
+        </header>
+        <div class="crit-bloc-intro">${escapeHtml(bloc.intro)}</div>
+        ${bloc.taches.map(t => renderTache(bareme, saisie, t)).join('')}
+      </section>
+    `}).join('') + `</div>`;
+  }
+
+  function renderTache(bareme, saisie, t) {
+    const selectedNiv = saisie[t.id];
+    const idx = bareme.niveaux.findIndex(n => n.code === selectedNiv);
+    const ptsCurrent = idx >= 0 ? t.niveaux[idx] : null;
+    return `
+      <div class="crit-tache" data-tache-row="${t.id}">
+        <div class="crit-tache-head">
+          <span class="crit-tache-id">${t.id}</span>
+          <span class="crit-tache-title">${escapeHtml(t.intitule)}</span>
+          <span class="crit-tache-comp" title="${escapeHtml((bareme.competences && bareme.competences[t.comp]) || '')}">${t.comp}</span>
+          <span class="crit-tache-pts ${ptsCurrent != null ? 'done' : ''}" data-pts-tache="${t.id}">${ptsCurrent != null ? ptsCurrent : '—'} / ${t.max}</span>
+        </div>
+        <div class="crit-tache-critere">
+          <strong>📌 Critère de réussite :</strong> ${escapeHtml(t.critere || '')}
+        </div>
+        <div class="crit-niveaux">
+          ${bareme.niveaux.map((n, i) => `
+            <div class="crit-niveau-cell lvl-${n.code} ${selectedNiv === n.code ? 'selected' : ''}"
+                 data-tache="${t.id}" data-niveau="${n.code}">
+              <div class="niv-head">
+                <span class="niv-code">${n.code} · ${escapeHtml(n.label)}</span>
+                <span class="niv-pts">${t.niveaux[i]} pt${t.niveaux[i] > 1 ? 's' : ''}</span>
+              </div>
+              <div class="niv-desc">${escapeHtml((t.indicateurs && t.indicateurs[n.code]) || '')}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  /* ========== PIÈCES JOINTES (photos + signatures) ========== */
+  function renderAttachCard() {
+    return `
+      <div class="attach-card">
+        <h3>📎 Pièces jointes ${activeTab === 'ep2faco' ? 'Façonnage' : 'Électrique'}
+          <span class="req-badge">recommandé avant validation</span>
+        </h3>
+        <div class="attach-row">
+          <div class="attach-slot" data-slot="photo">
+            <div class="icon">📷</div>
+            <div class="lbl">Photo de la pièce<small>tube cintré, platine câblée, copie écrite…</small></div>
+            <button type="button" data-act="add-photo">📷 Prendre une photo</button>
+            <input type="file" accept="image/*,application/pdf" capture="environment" data-input="photo" />
+            <div class="attach-thumbs" data-thumbs="photo"></div>
+            <div class="attach-status warn" data-status="photo">⚠ Aucune photo</div>
+          </div>
+          <div class="attach-slot" data-slot="signature_eleve">
+            <div class="icon">✍</div>
+            <div class="lbl">Signature élève<small>l'élève signe sa note au doigt</small></div>
+            <button type="button" data-act="sign-eleve">✍ Faire signer l'élève</button>
+            <div class="attach-thumbs" data-thumbs="signature_eleve"></div>
+            <div class="attach-status warn" data-status="signature_eleve">⚠ Non signé</div>
+          </div>
+          <div class="attach-slot" data-slot="signature_prof">
+            <div class="icon">🖋</div>
+            <div class="lbl">Signature prof<small>tu signes l'évaluation</small></div>
+            <button type="button" data-act="sign-prof">🖋 Signer comme examinateur</button>
+            <div class="attach-thumbs" data-thumbs="signature_prof"></div>
+            <div class="attach-status warn" data-status="signature_prof">⚠ Non signé</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function wireAttach() {
+    const card = document.querySelector('.attach-card');
+    if (!card) return;
+    /* Bouton "Prendre une photo" → trigger input file */
+    card.querySelector('[data-act="add-photo"]').onclick = () => {
+      card.querySelector('[data-input="photo"]').click();
+    };
+    card.querySelector('[data-input="photo"]').onchange = (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      Attach.addPhoto(currentEleve, activeTab, file).then(rec => {
+        if (rec) {
+          refreshAttachThumbs();
+          updateSyncPendingBadge();
+        }
+        e.target.value = ''; /* reset pour pouvoir reprendre la même */
+      });
+    };
+    /* Boutons signature */
+    card.querySelector('[data-act="sign-eleve"]').onclick = () => {
+      Attach.openSignatureModal(currentEleve, activeTab, 'signature_eleve').then(rec => {
+        if (rec) { refreshAttachThumbs(); updateSyncPendingBadge(); }
+      });
+    };
+    card.querySelector('[data-act="sign-prof"]').onclick = () => {
+      Attach.openSignatureModal(currentEleve, activeTab, 'signature_prof').then(rec => {
+        if (rec) { refreshAttachThumbs(); updateSyncPendingBadge(); }
+      });
+    };
+  }
+
+  function refreshAttachThumbs() {
+    if (!currentEleve) return;
+    Attach.list(currentEleve, activeTab).then(items => {
+      const card = document.querySelector('.attach-card');
+      if (!card) return;
+      ['photo', 'signature_eleve', 'signature_prof'].forEach(type => {
+        const wrap = card.querySelector(`[data-thumbs="${type}"]`);
+        const slot = card.querySelector(`[data-slot="${type}"]`);
+        const status = card.querySelector(`[data-status="${type}"]`);
+        const filtered = items.filter(it => it.type === type);
+        if (filtered.length === 0) {
+          wrap.innerHTML = '';
+          slot.classList.remove('done');
+          status.className = 'attach-status warn';
+          status.textContent = type === 'photo' ? '⚠ Aucune photo' : '⚠ Non signé';
+        } else {
+          wrap.innerHTML = filtered.map(it => `
+            <div class="thumb-wrap">
+              <img src="${it.thumb || it.data}" data-view-id="${it.id}" title="Clic pour agrandir" />
+              <span class="thumb-del" data-del-id="${it.id}" title="Supprimer">×</span>
+            </div>
+          `).join('');
+          slot.classList.add('done');
+          status.className = 'attach-status ok';
+          status.textContent = type === 'photo'
+            ? `✓ ${filtered.length} photo${filtered.length > 1 ? 's' : ''} jointe${filtered.length > 1 ? 's' : ''}`
+            : '✓ Signé · ' + new Date(filtered[filtered.length - 1].date).toLocaleString('fr-FR', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
+          /* Wiring viewer + delete */
+          wrap.querySelectorAll('[data-view-id]').forEach(img => {
+            img.onclick = () => Attach.viewFullscreen(parseInt(img.dataset.viewId, 10));
+          });
+          wrap.querySelectorAll('[data-del-id]').forEach(btn => {
+            btn.onclick = (e) => {
+              e.stopPropagation();
+              if (!confirm('Supprimer cette pièce jointe ?')) return;
+              Attach.remove(parseInt(btn.dataset.delId, 10)).then(() => {
+                refreshAttachThumbs();
+                updateSyncPendingBadge();
+              });
+            };
+          });
+        }
+      });
+    });
+  }
+
+  function updateSyncPendingBadge() {
+    if (!window.Attach) return;
+    Attach.pendingSync().then(n => {
+      const el = document.getElementById('sync-pending');
+      if (el) el.textContent = `📎 ${n} pièce${n > 1 ? 's' : ''} en attente sync`;
+    });
+  }
+
+  function wireBlocs() {
+    document.querySelectorAll('.crit-niveau-cell').forEach(cell => {
+      cell.onclick = () => {
+        const tid = cell.dataset.tache;
+        const niv = cell.dataset.niveau;
+        if (saisies[activeTab][tid] === niv) delete saisies[activeTab][tid];
+        else saisies[activeTab][tid] = niv;
+        markCells(tid);
+        scheduleSave();
+        refreshFinalBanner();
+        updateBlocStrip();
+        updateCompCard();
+      };
+    });
+  }
+
+  function markCells(tid) {
+    const bareme = baremes[activeTab];
+    const saisie = saisies[activeTab];
+    const cells = document.querySelectorAll(`.crit-niveau-cell[data-tache="${CSS.escape(tid)}"]`);
+    cells.forEach(c => {
+      const isSel = c.dataset.niveau === saisie[tid];
+      c.classList.toggle('selected', isSel);
+    });
+    const ptsCell = document.querySelector(`[data-pts-tache="${CSS.escape(tid)}"]`);
+    if (!ptsCell) return;
+    const t = findTache(bareme, tid);
+    if (saisie[tid] && t) {
+      const idx = bareme.niveaux.findIndex(n => n.code === saisie[tid]);
+      ptsCell.textContent = `${t.niveaux[idx]} / ${t.max}`;
+      ptsCell.classList.add('done');
+    } else {
+      ptsCell.textContent = `— / ${t ? t.max : '?'}`;
+      ptsCell.classList.remove('done');
+    }
+  }
+
+  function findTache(bareme, tid) {
+    for (const b of bareme.blocs) {
+      const t = b.taches.find(x => x.id === tid);
+      if (t) return t;
+    }
+    return null;
+  }
+
+  /* ========== BANDEAU FINAL (les 2 notes + moyenne) ========== */
+  function refreshFinalBanner() {
+    const rFaco = CCF.compute(baremes.ep2faco, saisies.ep2faco);
+    const rElec = CCF.compute(baremes.ep2elec, saisies.ep2elec);
+    const aFaco = Object.keys(saisies.ep2faco).length > 0;
+    const aElec = Object.keys(saisies.ep2elec).length > 0;
+
+    document.getElementById('note-faco').textContent = aFaco ? rFaco.note20Brute.toFixed(1).replace('.', ',') : '—';
+    document.getElementById('note-elec').textContent = aElec ? rElec.note20Brute.toFixed(1).replace('.', ',') : '—';
+    document.getElementById('pts-faco').textContent = `${rFaco.totalBrut} / ${rFaco.totalMax} pts`;
+    document.getElementById('pts-elec').textContent = `${rElec.totalBrut} / ${rElec.totalMax} pts`;
+
+    /* Moyenne : seulement les sous-épreuves saisies (sinon la 1re saisie tirerait vers 0) */
+    let moyenne = 0, n = 0;
+    if (aFaco) { moyenne += rFaco.note20Brute; n++; }
+    if (aElec) { moyenne += rElec.note20Brute; n++; }
+    const noteFinale = n > 0 ? moyenne / n : 0;
+    const finalEl = document.getElementById('note-final');
+    if (n === 0) {
+      finalEl.textContent = '—';
+      finalEl.parentElement.parentElement.style.background = '#1b3a63';
+    } else {
+      finalEl.textContent = noteFinale.toFixed(1).replace('.', ',');
+      /* Si une seule des 2 est saisie : moyenne partielle (orange), sinon validée (bleu) */
+      finalEl.parentElement.parentElement.style.background = (n === 2) ? '#1b3a63' : '#dd6b20';
+    }
+
+    /* Mini-notes dans les onglets */
+    document.getElementById('tab-mini-faco').textContent = aFaco ? `${rFaco.note20Brute.toFixed(1).replace('.', ',')}/20` : '—/20';
+    document.getElementById('tab-mini-elec').textContent = aElec ? `${rElec.note20Brute.toFixed(1).replace('.', ',')}/20` : '—/20';
+  }
+
+  function updateBlocStrip() {
+    /* Rerender just la bande des blocs (pour mettre à jour les points) */
+    const root = document.getElementById('grid-root');
+    const bareme = baremes[activeTab];
+    const saisie = saisies[activeTab];
+    const stripEl = root.querySelector('.ep2-bloc-strip');
+    if (stripEl) {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = renderBlocStrip(bareme, saisie);
+      stripEl.replaceWith(tmp.firstElementChild);
+    }
+  }
+
+  function updateCompCard() {
+    const root = document.getElementById('grid-root');
+    const bareme = baremes[activeTab];
+    const saisie = saisies[activeTab];
+    const cardEl = root.querySelector('.ep2-comp-card');
+    if (cardEl) {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = renderCompCard(bareme, saisie);
+      cardEl.replaceWith(tmp.firstElementChild);
+    }
+    /* Bloc-strip aussi (points par bloc dans la bande haute) */
+    /* + entête bloc-pts */
+    bareme.blocs.forEach(b => {
+      const r = CCF.compute(bareme, saisie);
+      const hdr = root.querySelector(`.crit-bloc[style*="${b.couleur}"] .crit-bloc-hdr .pts`);
+      /* on cible par couleur — pas idéal mais OK ici */
+    });
+    /* Plus simple : MAJ via querySelectorAll */
+    root.querySelectorAll('.crit-bloc').forEach((sec, i) => {
+      const b = bareme.blocs[i];
+      const r = CCF.compute(bareme, saisie);
+      const ptsEl = sec.querySelector('.crit-bloc-hdr .pts');
+      if (ptsEl) ptsEl.textContent = `${r.pointsParBloc[b.code] || 0} / ${b.max} pts`;
+    });
+  }
+
+  /* ========== SAVE ========== */
+  function scheduleSave() {
+    if (!currentEleve) return;
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      CCF.save(activeTab, currentEleve, saisies[activeTab], 'FH');
+      flashSaved();
+    }, DEBOUNCE_MS);
+  }
+
+  function flashSaved() {
+    const tag = document.getElementById('saved-tag');
+    if (!tag) return;
+    tag.classList.add('visible');
+    setTimeout(() => tag.classList.remove('visible'), 1200);
+  }
+
+  function clearAll() {
+    if (!currentEleve) { alert("Sélectionne d'abord un élève."); return; }
+    if (!confirm(`Effacer la saisie CCF EP2 (Façonnage + Électrique) pour ${currentEleve} ?`)) return;
+    EPREUVES.forEach(ep => { saisies[ep] = {}; CCF.remove(ep, currentEleve); });
+    renderActive();
+    refreshFinalBanner();
+  }
+
+  /* ========== TOGGLE COMPACT ========== */
+  function toggleCompact() {
+    document.body.classList.toggle('mode-compact');
+    document.getElementById('btn-toggle-crits').classList.toggle('active');
+    document.getElementById('btn-toggle-crits').textContent =
+      document.body.classList.contains('mode-compact') ? '📋 Afficher critères' : '📋 Mode compact';
+  }
+
+  /* ========== EXPORT BILAN ========== */
+  function copyBilan() {
+    if (!currentEleve) { alert("Sélectionne d'abord un élève."); return; }
+    const rFaco = CCF.compute(baremes.ep2faco, saisies.ep2faco);
+    const rElec = CCF.compute(baremes.ep2elec, saisies.ep2elec);
+    const aFaco = Object.keys(saisies.ep2faco).length > 0;
+    const aElec = Object.keys(saisies.ep2elec).length > 0;
+    let n = 0, sum = 0;
+    if (aFaco) { sum += rFaco.note20Brute; n++; }
+    if (aElec) { sum += rElec.note20Brute; n++; }
+    const final = n > 0 ? sum / n : 0;
+
+    const L = [];
+    L.push(`BILAN CCF EP2 — CAP IFCA — Élève : ${currentEleve}`);
+    L.push(`LP Privé Jacques Raynaud · Campus ÉQUATIO`);
+    L.push(`Date : ${new Date().toLocaleDateString('fr-FR')}`);
+    L.push('');
+    L.push(`>>> NOTE FINALE CCF EP2 : ${final.toFixed(1).replace('.', ',')} / 20 ${n < 2 ? '(partielle — '+n+'/2 sous-épreuves)' : ''}`);
+    L.push(`    = (Façonnage ${aFaco ? rFaco.note20Brute.toFixed(1).replace('.', ',') : '—'} + Électrique ${aElec ? rElec.note20Brute.toFixed(1).replace('.', ',') : '—'}) ÷ 2`);
+    L.push('');
+    L.push('--- EP2 FAÇONNAGE ---');
+    L.push(`Note : ${aFaco ? rFaco.note20Brute.toFixed(1).replace('.', ',') : '—'} / 20  (${rFaco.totalBrut}/${rFaco.totalMax} pts)`);
+    baremes.ep2faco.blocs.forEach(b => L.push(`  ${b.code} ${b.label} : ${rFaco.pointsParBloc[b.code] || 0}/${b.max}`));
+    L.push('Compétences :');
+    Object.keys(rFaco.maxParComp).sort().forEach(c => {
+      const pts = rFaco.pointsParComp[c] || 0, max = rFaco.maxParComp[c], pct = Math.round((pts / max) * 100);
+      L.push(`  ${c} : ${pts}/${max} (${pct}%)`);
+    });
+    L.push('');
+    L.push('--- EP2 ÉLECTRIQUE ---');
+    L.push(`Note : ${aElec ? rElec.note20Brute.toFixed(1).replace('.', ',') : '—'} / 20  (${rElec.totalBrut}/${rElec.totalMax} pts)`);
+    baremes.ep2elec.blocs.forEach(b => L.push(`  ${b.code} ${b.label} : ${rElec.pointsParBloc[b.code] || 0}/${b.max}`));
+    L.push('Compétences :');
+    Object.keys(rElec.maxParComp).sort().forEach(c => {
+      const pts = rElec.pointsParComp[c] || 0, max = rElec.maxParComp[c], pct = Math.round((pts / max) * 100);
+      L.push(`  ${c} : ${pts}/${max} (${pct}%)`);
+    });
+    const txt = L.join('\n');
+    navigator.clipboard.writeText(txt).then(
+      () => alert('Bilan copié dans le presse-papier ✓'),
+      () => prompt('Copie manuelle :', txt)
+    );
+  }
+
+  /* ========== UTILS ========== */
+  function escapeHtml(s) {
+    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  /* ========== GO ========== */
+  document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+
+</body>
+</html>

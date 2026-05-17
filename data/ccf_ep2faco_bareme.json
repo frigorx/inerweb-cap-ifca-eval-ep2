@@ -1,0 +1,262 @@
+{
+  "_doc": "Barème CCF EP2 — Façonnage (CAP IFCA). Source : CCF_EP2_Faconnage_CORRIGE_FINAL.docx. Mapping compétences ALIGNÉ STRICT sur référentiel CAP IFCA UP2 (arrêté de création) : seules les compétences C1.2 et C3.1→C3.9 sont évaluables en EP2. C2.4 (Sécuriser) appartient à UP1=EP1 — pour EP2 les tâches sécurité/EPI/organisation pointent vers C3.1 'Organiser le poste de travail' qui contient explicitement 'Travailler en sécurité' (zone sécurisée, situations dangereuses signalées). Total brut 200 pts ramené à /20.",
+  "epreuve": "EP2-FACO",
+  "intitule": "✅ CCF EP2 — Façonnage (intervention frigorifique)",
+  "session": "2025/26",
+  "version_bareme": "V2-2026-05-17",
+  "duree_h": 3.5,
+  "coef": 4,
+  "total_max": 200,
+  "diviseur_note_finale": 200,
+  "ramene_sur": 20,
+  "sous_epreuves": [
+    { "code": "EP2-FACO", "label": "Façonnage complet", "coef": 1, "couleur": "#1b3a63", "blocs": ["A", "B", "C", "D"], "competences_cles": ["C3.1", "C3.4", "C3.8", "C3.9"] }
+  ],
+  "niveaux": [
+    { "code": "NA", "label": "Non acquis",          "couleur": "#c53030", "indice": 0 },
+    { "code": "EC", "label": "En cours",            "couleur": "#dd6b20", "indice": 1 },
+    { "code": "A",  "label": "Acquis",              "couleur": "#38a169", "indice": 2 },
+    { "code": "PA", "label": "Parfaitement acquis", "couleur": "#1b3a63", "indice": 3 }
+  ],
+  "blocs": [
+    {
+      "code": "A",
+      "label": "Préparation du chantier",
+      "max": 40,
+      "couleur": "#1b3a63",
+      "intro": "Inventaire caisse, vérification matériel, choix outils selon plan, mesure cuivre, fiche sécurité (risques + EPI).",
+      "taches": [
+        {
+          "id": "A-1",
+          "intitule": "Inventaire — caisse complète et rangée sous établi",
+          "comp": "C3.1",
+          "critere": "Caisse complète, outils adaptés, rangée sous l'établi (gestion outillage)",
+          "max": 5,
+          "niveaux": [0, 3, 4, 5],
+          "indicateurs": {
+            "NA": "Caisse incomplète, pas de demande. Caisse non rangée sous établi.",
+            "EC": "Caisse incomplète mais demande faite. Rangement partiel.",
+            "A":  "Caisse quasi complète. Rangée sous établi.",
+            "PA": "Caisse complète dès le départ. Parfaitement rangée."
+          }
+        },
+        {
+          "id": "A-2",
+          "intitule": "Vérification matériel — contrôle et signalement anomalies",
+          "comp": "C3.1",
+          "critere": "Matériel fourni vérifié, anomalies signalées (qualité/quantité)",
+          "max": 5,
+          "niveaux": [0, 3, 4, 5],
+          "indicateurs": {
+            "NA": "Matériel non vérifié. Anomalies non signalées.",
+            "EC": "Vérification partielle. Quelques oublis.",
+            "A":  "Matériel vérifié. Anomalies signalées.",
+            "PA": "Contrôle rigoureux et complet. Signalement immédiat."
+          }
+        },
+        {
+          "id": "A-3",
+          "intitule": "Récupération outils — choix adapté au plan",
+          "comp": "C3.1",
+          "critere": "Outils adaptés à la tâche choisis et utilisés correctement",
+          "max": 10,
+          "niveaux": [0, 4, 7, 10],
+          "indicateurs": {
+            "NA": "Outils inadaptés ou manquants. Prise d'outils inutiles. Aucune analyse du plan.",
+            "EC": "Outils globalement corrects. 1-2 erreurs (oubli ou surplus).",
+            "A":  "Bons outils récupérés. 1 petit oubli ou surplus.",
+            "PA": "Tous les outils nécessaires, uniquement ceux-là. Analyse parfaite du plan."
+          }
+        },
+        {
+          "id": "A-4",
+          "intitule": "Mesure cuivre — exactitude et conformité au plan",
+          "comp": "C3.4",
+          "critere": "Préparation au façonnage : longueurs mesurées conformément au CCTP",
+          "max": 10,
+          "niveaux": [0, 4, 7, 10],
+          "indicateurs": {
+            "NA": "Mesures absentes ou fausses. Aucune vérification conformité.",
+            "EC": "Mesures approximatives. Conformité non vérifiée.",
+            "A":  "Mesures correctes. Conformité vérifiée.",
+            "PA": "Mesures précises et complètes. Conformité parfaite validée."
+          }
+        },
+        {
+          "id": "A-5",
+          "intitule": "Fiche sécurité — risques identifiés et EPI adaptés",
+          "comp": "C3.1",
+          "critere": "Travailler en sécurité : risques identifiés, zone sécurisée, EPI adaptés",
+          "max": 10,
+          "niveaux": [0, 4, 7, 10],
+          "indicateurs": {
+            "NA": "Fiche incomplète ou vide. Risques non identifiés. EPI inadaptés.",
+            "EC": "Fiche partiellement remplie. Quelques risques oubliés. EPI partiels.",
+            "A":  "Fiche complète. Risques identifiés. EPI adaptés.",
+            "PA": "Fiche parfaite et lisible. Tous risques identifiés. EPI parfaitement adaptés."
+          }
+        }
+      ]
+    },
+    {
+      "code": "B",
+      "label": "Réalisation de la pièce",
+      "max": 85,
+      "couleur": "#2d8659",
+      "intro": "Cintrage, dudgeonnage, brasage : respect des cotes, sens fluide, esthétique cintrage, soudures (cordons + chalumeau).",
+      "taches": [
+        {
+          "id": "B-1",
+          "intitule": "Respect des cotes (tolérance ≤ 2 cm cumulée)",
+          "comp": "C3.4",
+          "critere": "Façonner les circuits : changements de section/direction conformes au plan",
+          "max": 30,
+          "niveaux": [0, 12, 20, 30],
+          "indicateurs": {
+            "NA": "Plus de 10 cm d'erreur cumulée. Pièce non conforme.",
+            "EC": "Erreur entre 5 et 10 cm cumulée.",
+            "A":  "Erreur entre 2 et 5 cm cumulée.",
+            "PA": "Erreur ≤ 2 cm cumulée. Conformité totale."
+          }
+        },
+        {
+          "id": "B-2",
+          "intitule": "Implantation — sens fluide respecté",
+          "comp": "C3.3",
+          "critere": "Implanter, fixer les équipements : alignement et sens de circulation",
+          "max": 10,
+          "niveaux": [0, 4, 7, 10],
+          "indicateurs": {
+            "NA": "Aucun alignement. Matériel implanté à l'envers. Non conforme au plan.",
+            "EC": "Éléments mal alignés. Un sens fluide incorrect.",
+            "A":  "Implantation correcte. Alignement perfectible.",
+            "PA": "Implantation parfaite. Sens du fluide respecté."
+          }
+        },
+        {
+          "id": "B-3",
+          "intitule": "Esthétique cintrage — pas d'écrasement, alignement",
+          "comp": "C3.4",
+          "critere": "Façonner : cintrages réguliers, raccordements esthétiques (CCTP)",
+          "max": 25,
+          "niveaux": [0, 10, 18, 25],
+          "indicateurs": {
+            "NA": "Pièce non ressemblante. Éléments très déformés. Plis, écrasements visibles.",
+            "EC": "Plusieurs défauts. Cintrages écrasés. Tubes inclinés.",
+            "A":  "Pièce ressemblante. Défauts mineurs. Cintrages parfois imprécis.",
+            "PA": "Pièce esthétique conforme. Cintrages parfaits. Alignement impeccable."
+          }
+        },
+        {
+          "id": "B-4",
+          "intitule": "Soudures — cordons réguliers, aspect brillant",
+          "comp": "C3.4",
+          "critere": "Brasage fort/tendre des joints étanches sur tubes métalliques",
+          "max": 15,
+          "niveaux": [0, 6, 11, 15],
+          "indicateurs": {
+            "NA": "Soudures irrégulières. Trous visibles, bords francs. Excès ou manque de brasure.",
+            "EC": "Soudures acceptables. Quelques irrégularités. Aspect moyen.",
+            "A":  "Soudures propres. Aspect correct. Pas de défaut majeur.",
+            "PA": "Soudures impeccables. Cordons réguliers et brillants. Aucun défaut visible."
+          }
+        },
+        {
+          "id": "B-5",
+          "intitule": "Usage chalumeau — réglage détendeur, posture, sécurité",
+          "comp": "C3.1",
+          "critere": "Travailler en sécurité : usage chalumeau (réglage, posture, EPI)",
+          "max": 5,
+          "niveaux": [0, 2, 3, 5],
+          "indicateurs": {
+            "NA": "Mauvais réglage détendeur. Flamme mal ajustée. EPI non portés, posture dangereuse.",
+            "EC": "Flamme instable. EPI partiels. Manque de rigueur.",
+            "A":  "Bon usage. Réglage correct. Sécurité respectée.",
+            "PA": "Usage exemplaire. Réglage précis, posture adaptée. Sécurité totale."
+          }
+        }
+      ]
+    },
+    {
+      "code": "C",
+      "label": "Mise en pression — étanchéité",
+      "max": 50,
+      "couleur": "#dd6b20",
+      "intro": "Test sous azote 10 bar, détection fuites raccords flare, montage du dispositif de test (manomètre).",
+      "taches": [
+        {
+          "id": "C-1",
+          "intitule": "Étanchéité raccords flare (0 fuite, dudgeon parfait)",
+          "comp": "C3.9",
+          "critere": "Vérifier l'étanchéité du circuit frigorifique avant mise en service",
+          "max": 35,
+          "niveaux": [0, 13, 24, 35],
+          "indicateurs": {
+            "NA": "3 fuites ou plus. Dudgeon mal réalisés. Serrages incorrects.",
+            "EC": "2 fuites détectées. Dudgeon moyens. Serrage à reprendre.",
+            "A":  "1 fuite détectée. Dudgeon corrects. Serrage OK après reprise.",
+            "PA": "0 fuite. Dudgeon parfaits. Serrage au couple respecté."
+          }
+        },
+        {
+          "id": "C-2",
+          "intitule": "Montage dispositif test — pression stable, sécurité HP",
+          "comp": "C3.9",
+          "critere": "Mettre sous pression avec gaz inerte, validation étanchéité",
+          "max": 15,
+          "niveaux": [0, 6, 11, 15],
+          "indicateurs": {
+            "NA": "Manomètre mal positionné. Aucune vérification. Danger HP, EPI absents.",
+            "EC": "Montage imprécis. Pression ne tenant pas. EPI non respectés.",
+            "A":  "Montage correct. Pression stable. EPI respectés.",
+            "PA": "Montage impeccable. Pression stable sur la durée. Sécurité HP totale."
+          }
+        }
+      ]
+    },
+    {
+      "code": "D",
+      "label": "Fin de chantier",
+      "max": 25,
+      "couleur": "#7c3aed",
+      "intro": "Démontage, tri/recyclage cuivre, poste propre, EPI portés jusqu'à la fin.",
+      "taches": [
+        {
+          "id": "D-1",
+          "intitule": "Démontage, tri, poste rangé (établi impeccable)",
+          "comp": "C3.8",
+          "critere": "Trier, valoriser les déchets selon réglementation ; poste propre",
+          "max": 20,
+          "niveaux": [0, 8, 14, 20],
+          "indicateurs": {
+            "NA": "Rien démonté ou cassé. Poste chaotique. Tri non fait. EPI retirés trop tôt.",
+            "EC": "Démontage partiel. Tri incomplet. Poste rangé minimum.",
+            "A":  "Démontage correct. Tri effectué. Poste propre. EPI maintenus.",
+            "PA": "Démontage parfait. Tri complet, aucun déchet. Établi impeccable. EPI jusqu'au bout."
+          }
+        },
+        {
+          "id": "D-2",
+          "intitule": "EPI port permanent — aucun rappel nécessaire",
+          "comp": "C3.1",
+          "critere": "Travailler en sécurité : port EPI continu pendant toute l'épreuve",
+          "max": 5,
+          "niveaux": [0, 2, 3, 5],
+          "indicateurs": {
+            "NA": "EPI non portés. Nombreux rappels. Comportement dangereux.",
+            "EC": "EPI partiels. Plusieurs rappels nécessaires.",
+            "A":  "EPI portés. 1-2 rappels.",
+            "PA": "EPI portés en permanence. Aucun rappel nécessaire."
+          }
+        }
+      ]
+    }
+  ],
+  "competences": {
+    "C3.1": "Organiser le poste de travail (travailler en sécurité, gérer outillage, zone propre)",
+    "C3.3": "Implanter, manutentionner, fixer les supportages et équipements",
+    "C3.4": "Façonner, raccorder, assembler, isoler les circuits frigorifiques (cintrage, brasage)",
+    "C3.8": "Trier, valoriser les déchets",
+    "C3.9": "Vérifier l'étanchéité d'un circuit avant mise en service"
+  }
+}

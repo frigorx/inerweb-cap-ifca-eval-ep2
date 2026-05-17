@@ -1,0 +1,489 @@
+/* inerWeb Eval CAP IFCA — charte stricte
+   Calibri 14pt min · Trebuchet MS bold titres · #1b3a63 / #ff6b35 · fond clair */
+
+:root {
+  --bleu: #1b3a63;
+  --bleu-clair: #2a5689;
+  --orange: #ff6b35;
+  --orange-clair: #ff8a5b;
+  --bg: #ffffff;
+  --bg-alt: #f6f8fb;
+  --bg-card: #ffffff;
+  --text: #1a202c;
+  --text-soft: #4a5568;
+  --border: #d9e1ec;
+  --vert: #38a169;
+  --rouge: #c53030;
+  --jaune: #dd6b20;
+  --shadow: 0 1px 3px rgba(27,58,99,0.08), 0 4px 12px rgba(27,58,99,0.04);
+  --radius: 8px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-alt);
+  color: var(--text);
+  font-family: Calibri, "Segoe UI", Tahoma, sans-serif;
+  font-size: 14pt;
+  line-height: 1.5;
+  text-align: left;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Trebuchet MS", "Lucida Grande", sans-serif;
+  font-weight: 700;
+  color: var(--bleu);
+  margin: 0 0 0.6em 0;
+  line-height: 1.25;
+}
+h1 { font-size: 24pt; }
+h2 { font-size: 18pt; }
+h3 { font-size: 16pt; }
+h4 { font-size: 14pt; }
+
+a { color: var(--bleu); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* === LAYOUT === */
+.app-shell {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+
+header.app-header {
+  background: var(--bg-card);
+  border-bottom: 3px solid var(--bleu);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Trebuchet MS", sans-serif;
+  font-weight: 700;
+  font-size: 18pt;
+  color: var(--bleu);
+}
+.logo .flake { font-size: 22pt; }
+.logo .badge-edu {
+  background: var(--orange);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 12pt;
+  margin-left: 4px;
+}
+.logo .signature {
+  font-size: 10pt;
+  font-weight: normal;
+  color: var(--text-soft);
+  margin-left: 8px;
+  font-family: Calibri, sans-serif;
+}
+
+.title-app {
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 16pt;
+  font-weight: 700;
+  color: var(--bleu);
+  margin-left: auto;
+}
+
+.prof-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-alt);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12pt;
+  border: 1px solid var(--border);
+}
+.prof-badge .dot {
+  width: 12px; height: 12px; border-radius: 50%;
+}
+.prof-badge button {
+  background: transparent; border: none; color: var(--text-soft);
+  cursor: pointer; font-size: 11pt;
+}
+
+/* === NAV TABS === */
+nav.tabs {
+  background: var(--bg-card);
+  display: flex;
+  gap: 0;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+nav.tabs button {
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 12px 20px;
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 14pt;
+  font-weight: 700;
+  color: var(--text-soft);
+  cursor: pointer;
+  white-space: nowrap;
+}
+nav.tabs button:hover { color: var(--bleu); background: var(--bg-alt); }
+nav.tabs button.active {
+  color: var(--bleu);
+  border-bottom-color: var(--orange);
+}
+
+main.app-main {
+  padding: 24px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+section.view { display: none; }
+section.view.visible { display: block; }
+
+footer.app-footer {
+  background: var(--bleu);
+  color: #fff;
+  text-align: center;
+  padding: 12px 24px;
+  font-size: 11pt;
+}
+footer.app-footer .rgpd {
+  color: #fff;
+  font-style: italic;
+}
+
+/* === COMPONENTS === */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.btn {
+  background: var(--bleu);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 13pt;
+  font-weight: 700;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.btn:hover { background: var(--bleu-clair); }
+.btn.secondary { background: transparent; color: var(--bleu); border: 2px solid var(--bleu); }
+.btn.orange { background: var(--orange); }
+.btn.orange:hover { background: var(--orange-clair); }
+.btn.ghost { background: transparent; color: var(--bleu); }
+.btn.small { padding: 6px 10px; font-size: 11pt; }
+
+input[type="text"], input[type="url"], select, textarea {
+  font-family: Calibri, sans-serif;
+  font-size: 13pt;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  width: 100%;
+}
+textarea { min-height: 70px; resize: vertical; }
+label { font-weight: 700; color: var(--bleu); display: block; margin-bottom: 4px; }
+
+.grid-cols-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.grid-cols-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid-cols-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+/* === ÉCRAN PROF (login) === */
+#view-login {
+  max-width: 700px;
+  margin: 40px auto;
+}
+.profs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+.prof-choice {
+  padding: 18px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+.prof-choice:hover { border-color: var(--bleu); background: var(--bg-alt); }
+.prof-choice.selected {
+  border-color: var(--orange);
+  background: #fff5ef;
+  box-shadow: 0 0 0 3px rgba(255,107,53,0.18);
+}
+.prof-choice .initials {
+  font-family: "Trebuchet MS", sans-serif;
+  font-weight: 700;
+  font-size: 24pt;
+  color: var(--bleu);
+}
+.prof-choice .full-name { font-size: 12pt; color: var(--text-soft); }
+
+/* === ÉVAL === */
+.eval-grid {
+  display: grid;
+  grid-template-columns: 100px repeat(4, 1fr);
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 6px;
+  padding: 6px;
+  background: var(--bg-alt);
+  border-radius: 6px;
+}
+.eval-grid .pseudo {
+  font-family: "Trebuchet MS", sans-serif;
+  font-weight: 700;
+  font-size: 14pt;
+  color: var(--bleu);
+}
+.eval-niveau {
+  padding: 8px 4px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  cursor: pointer;
+  text-align: center;
+  font-weight: 700;
+  font-size: 11pt;
+  user-select: none;
+}
+.eval-niveau.NA { color: var(--rouge); }
+.eval-niveau.ECA { color: var(--jaune); }
+.eval-niveau.A { color: var(--vert); }
+.eval-niveau.M { color: var(--bleu); }
+.eval-niveau.selected.NA { background: var(--rouge); color: #fff; border-color: var(--rouge); }
+.eval-niveau.selected.ECA { background: var(--jaune); color: #fff; border-color: var(--jaune); }
+.eval-niveau.selected.A { background: var(--vert); color: #fff; border-color: var(--vert); }
+.eval-niveau.selected.M { background: var(--bleu); color: #fff; border-color: var(--bleu); }
+
+.competence-block {
+  border-left: 4px solid var(--orange);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background: var(--bg-alt);
+  border-radius: 6px;
+}
+.competence-block h4 {
+  margin: 0 0 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.competence-code {
+  font-family: "Trebuchet MS", sans-serif;
+  background: var(--bleu);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11pt;
+}
+
+.tp-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  cursor: pointer;
+  background: var(--bg-card);
+  transition: all 0.12s;
+}
+.tp-card:hover { border-color: var(--bleu); }
+.tp-card.selected { border-color: var(--orange); background: #fff8f3; }
+.tp-card .tp-id {
+  font-family: "Trebuchet MS", sans-serif;
+  font-weight: 700;
+  color: var(--orange);
+  font-size: 13pt;
+}
+.tp-card .tp-titre { font-weight: 700; color: var(--bleu); margin-top: 4px; }
+.tp-card .tp-meta { font-size: 11pt; color: var(--text-soft); margin-top: 6px; }
+
+/* === SYNC BADGE === */
+.sync-badge {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11pt;
+  box-shadow: var(--shadow);
+  z-index: 100;
+}
+.sync-badge .icon { margin-right: 4px; }
+.sync-badge.sync { color: var(--vert); }
+.sync-badge.buffer { color: var(--jaune); }
+.sync-badge.error { color: var(--rouge); }
+
+/* === TOAST === */
+.toast {
+  position: fixed;
+  top: 80px;
+  right: 16px;
+  background: var(--bleu);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  z-index: 200;
+  font-size: 12pt;
+  animation: slidein 0.25s ease;
+  max-width: 320px;
+}
+@keyframes slidein {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* === AGENDA === */
+.agenda-day {
+  border-left: 4px solid var(--bleu);
+  padding: 8px 14px;
+  margin-bottom: 10px;
+  background: var(--bg-alt);
+  border-radius: 6px;
+}
+.agenda-event {
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.agenda-event:last-child { border-bottom: none; }
+.agenda-event .horaire {
+  font-family: "Trebuchet MS", sans-serif;
+  font-weight: 700;
+  color: var(--bleu);
+  min-width: 130px;
+}
+.agenda-event .prof-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 10pt;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+/* === TP TOURNANT TP-056 === */
+.phase-progress {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin: 16px 0;
+}
+.phase-step {
+  padding: 14px 8px;
+  border-radius: 6px;
+  background: var(--bg-alt);
+  border: 2px solid var(--border);
+  text-align: center;
+  font-weight: 700;
+}
+.phase-step.done {
+  background: var(--vert);
+  color: #fff;
+  border-color: var(--vert);
+}
+.phase-step.current {
+  border-color: var(--orange);
+  background: #fff8f3;
+}
+.phase-step.locked {
+  background: #efefef;
+  color: #999;
+  border-color: var(--border);
+}
+
+.visa-prof {
+  padding: 8px 12px;
+  background: #fff5ef;
+  border: 2px dashed var(--orange);
+  border-radius: 6px;
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.visa-prof.signe {
+  background: #f0fdf4;
+  border: 2px solid var(--vert);
+  border-style: solid;
+}
+
+/* === BULLETIN PRINT === */
+@media print {
+  body { background: #fff; font-size: 11pt; }
+  header.app-header, nav.tabs, footer.app-footer, .sync-badge, .no-print { display: none !important; }
+  .card { box-shadow: none; border: 1px solid #ddd; }
+  section.view { display: none; }
+  #view-bulletin.visible { display: block; }
+  @page { size: A4 portrait; margin: 1.5cm; }
+  .competence-block { break-inside: avoid; }
+  .bulletin-grid { break-inside: avoid; }
+}
+
+.bulletin-page {
+  background: #fff;
+  padding: 30px;
+  max-width: 21cm;
+  margin: 0 auto;
+}
+.bulletin-grid {
+  display: grid;
+  grid-template-columns: 60px repeat(auto-fit, minmax(70px, 1fr));
+  gap: 4px;
+  font-size: 11pt;
+}
+.bulletin-grid > div {
+  padding: 6px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.bulletin-grid .head {
+  background: var(--bleu);
+  color: #fff;
+  font-family: "Trebuchet MS", sans-serif;
+  font-weight: 700;
+}
+.bulletin-grid .niveau-NA { background: #fed7d7; color: var(--rouge); font-weight: 700; }
+.bulletin-grid .niveau-ECA { background: #feebc8; color: var(--jaune); font-weight: 700; }
+.bulletin-grid .niveau-A { background: #c6f6d5; color: var(--vert); font-weight: 700; }
+.bulletin-grid .niveau-M { background: #bee3f8; color: var(--bleu); font-weight: 700; }
+
+/* === RESPONSIVE === */
+@media (max-width: 800px) {
+  .grid-cols-2, .grid-cols-3, .grid-cols-4 { grid-template-columns: 1fr; }
+  .profs-grid { grid-template-columns: 1fr; }
+  .phase-progress { grid-template-columns: repeat(3, 1fr); }
+  .title-app { font-size: 13pt; margin-left: 0; }
+}

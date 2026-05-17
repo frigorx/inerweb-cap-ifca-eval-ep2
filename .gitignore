@@ -1,0 +1,16 @@
+node_modules/
+*.log
+correspondance_eleves.json
+local/
+*.private.*
+*-prive.*
+data/correspondance_*.json
+.env
+.env.*
+.clasp.json
+apps-script/.clasp.json
+apps-script/.claspignore
+.DS_Store
+Thumbs.db
+*.swp
+*.bak

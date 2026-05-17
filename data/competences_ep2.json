@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "description": "Référentiel compétences EP2 CAP IFCA — Réalisation d'une intervention",
+    "lastUpdate": "2026-04-25",
+    "epreuve": "EP2"
+  },
+  "competences": [
+    {"code": "C2.1", "libelle": "Mettre en œuvre les méthodes (procédure)", "famille": "C2", "principale": true},
+    {"code": "C2.2", "libelle": "Sécurité — EPI, VAT, gestes", "famille": "C2", "principale": true},
+    {"code": "C3.1", "libelle": "Implanter / poser les composants", "famille": "C3", "principale": true},
+    {"code": "C3.2", "libelle": "Façonner / cintrer / dresser les tubes", "famille": "C3", "principale": true},
+    {"code": "C3.3", "libelle": "Réaliser les assemblages mécaniques (raccords)", "famille": "C3", "principale": true},
+    {"code": "C3.4", "libelle": "Brasure tendre / forte", "famille": "C3", "principale": true},
+    {"code": "C3.5", "libelle": "Câblage électrique BT (faible / fort courant)", "famille": "C3", "principale": true},
+    {"code": "C3.6", "libelle": "Mise en route / réglages", "famille": "C3", "principale": true},
+    {"code": "C3.7", "libelle": "Remplacement de composant", "famille": "C3", "principale": true}
+  ],
+  "axes_radar_ep2": ["C2.1", "C2.2", "C3.1", "C3.2", "C3.3", "C3.4", "C3.5", "C3.6", "C3.7"]
+}

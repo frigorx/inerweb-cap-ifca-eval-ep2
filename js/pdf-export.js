@@ -78,18 +78,22 @@
       'table.detail { width:100%; border-collapse:collapse; margin:8px 0; font-size:10pt; }',
       'table.detail th { background:#1b3a63; color:#fff; padding:5px 8px; text-align:left; font-weight:bold; }',
       'table.detail td { padding:4px 8px; border-bottom:1px solid #e0e4ea; }',
-      'table.detail .niv { font-weight:bold; text-align:center; padding:2px 8px; border-radius:3px; color:#fff; font-size:9pt; }',
-      'table.detail .niv-NA { background:#c53030; }',
-      'table.detail .niv-EC { background:#dd6b20; }',
-      'table.detail .niv-A  { background:#38a169; }',
-      'table.detail .niv-PA { background:#1b3a63; }',
+      'table.detail .niv { font-weight:bold; text-align:center; padding:2px 8px; border-radius:3px; color:#fff; font-size:9pt; display:inline-block; min-width:32px; }',
+      'table.detail .niv-NE { background:#718096; }',
+      'table.detail .niv-NA { background:#e53e3e; }',
+      'table.detail .niv-EC { background:#ed8936; }',
+      'table.detail .niv-A  { background:#48bb78; }',
+      'table.detail .niv-PA { background:#3182ce; }',
       'table.detail .pts { text-align:right; font-weight:bold; color:#1b3a63; }',
       '.comp-grid { display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin:6px 0; }',
-      '.comp-row { padding:5px 10px; background:#f4f6fa; border-left:4px solid #ccc; border-radius:3px; display:flex; justify-content:space-between; font-size:10pt; }',
-      '.comp-row.lvl-NA { border-left-color:#c53030; }',
-      '.comp-row.lvl-EC { border-left-color:#dd6b20; }',
-      '.comp-row.lvl-A  { border-left-color:#38a169; }',
-      '.comp-row.lvl-PA { border-left-color:#1b3a63; }',
+      '.comp-row { padding:5px 10px; background:#f4f6fa; border-left:5px solid #ccc; border-radius:3px; display:flex; justify-content:space-between; font-size:10pt; }',
+      '.comp-row.lvl-NE { border-left-color:#718096; background:#f7fafc; }',
+      '.comp-row.lvl-NA { border-left-color:#e53e3e; background:#fff5f5; }',
+      '.comp-row.lvl-EC { border-left-color:#ed8936; background:#fffaf0; }',
+      '.comp-row.lvl-A  { border-left-color:#48bb78; background:#f0fff4; }',
+      '.comp-row.lvl-PA { border-left-color:#3182ce; background:#ebf8ff; }',
+      '.comp-row strong.pct-NE { color:#718096; } .comp-row strong.pct-NA { color:#e53e3e; }',
+      '.comp-row strong.pct-EC { color:#c05621; } .comp-row strong.pct-A { color:#2f855a; } .comp-row strong.pct-PA { color:#2c5282; }',
       '.comp-row strong { color:#1b3a63; }',
       '.sig-block { display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:14px; }',
       '.sig-cell { border:1px solid #cbd5e0; border-radius:6px; padding:8px; }',
@@ -216,7 +220,7 @@
       var lvl = pct >= 86 ? 'PA' : pct >= 61 ? 'A' : pct >= 26 ? 'EC' : 'NA';
       return '<div class="comp-row lvl-' + lvl + '">' +
         '<span><strong>' + c + '</strong> ' + esc(a.libelle) + '</span>' +
-        '<span><strong>' + a.pts + '/' + a.max + ' (' + pct + '%) — ' + lvl + '</strong></span>' +
+        '<span><strong class="pct-' + lvl + '">' + a.pts + '/' + a.max + ' (' + pct + '%) — ' + lvl + '</strong></span>' +
         '</div>';
     }).join('');
     return '<h2>🎯 Compétences mobilisées (référentiel CAP IFCA UP2)</h2><div class="comp-grid">' + rows + '</div>';

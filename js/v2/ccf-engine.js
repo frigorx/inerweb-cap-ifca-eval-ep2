@@ -38,9 +38,14 @@
     bareme.blocs.forEach(bloc => {
       let pBloc = 0;
       bloc.taches.forEach(t => {
+        const codeNiv = saisie[t.id];
+        /* "NE" (Non Évalué) = tâche EXCLUE entièrement du calcul
+           (ni points ni max). Permet de saisir un élève qui n'a pas pu
+           être évalué (matériel manquant, manque de temps...) sans
+           pénaliser sa note finale. */
+        if (codeNiv === 'NE') return;
         totalMax += t.max;
         maxParComp[t.comp] = (maxParComp[t.comp] || 0) + t.max;
-        const codeNiv = saisie[t.id];
         if (codeNiv) {
           const idx = niveauIndex(codeNiv);
           if (idx != null) {
@@ -55,9 +60,13 @@
       pointsParBloc[bloc.code] = pBloc;
     });
 
-    /* Note finale brute (rétro-compat) : (total brut / diviseur) × ramene_sur, plafonné au ramene_sur */
-    const div = bareme.diviseur_note_finale || bareme.total_max || 280;
+    /* Note finale brute : (total brut / total max EFFECTIF) × ramene_sur, plafonné au ramene_sur.
+       On utilise totalMax dynamique (= somme des max des tâches NON NE) plutôt que le diviseur fixe.
+       Ainsi, un élève avec 1 tâche en NE (matériel cassé) n'est pas pénalisé : sa note est calculée
+       sur les tâches qu'il a effectivement pu passer. Rétro-compat : si aucun NE saisi, totalMax
+       = total_max du barème, donc résultat identique aux versions précédentes. */
     const sur = bareme.ramene_sur || 20;
+    const div = totalMax > 0 ? totalMax : (bareme.diviseur_note_finale || bareme.total_max || 280);
     const note20Brute = Math.min(sur, (totalBrut / div) * sur);
 
     /* Niveau moyen par compétence (0..3) — pour radar */
@@ -81,9 +90,10 @@
         let ptsObtenus = 0, ptsMax = 0, nbTachesNotees = 0, nbTachesTot = 0;
         bareme.blocs.filter(b => (se.blocs || []).includes(b.code)).forEach(bloc => {
           bloc.taches.forEach(t => {
+            const codeNiv = saisie[t.id];
+            if (codeNiv === 'NE') return; /* NE : exclu du calcul de cette sous-épreuve aussi */
             ptsMax += t.max;
             nbTachesTot++;
-            const codeNiv = saisie[t.id];
             if (codeNiv) {
               const idx = niveauIndex(codeNiv);
               if (idx != null) {

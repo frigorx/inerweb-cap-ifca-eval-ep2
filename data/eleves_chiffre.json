@@ -1,12 +1,13 @@
 {
   "_meta": {
-    "description": "Table E0X → pseudo lisible (chiffrée AES-256-GCM) pour CCF EP2 CAP IFCA",
+    "description": "Table E0X → NOM Prénom (chiffrée AES-256-GCM) pour CCF EP2 CAP IFCA",
     "algo": "AES-256-GCM avec PBKDF2(100000 itérations, SHA-256)",
     "password_hint": "Mot de passe pédagogique court — donné par F. Henninot",
     "nb_eleves": 24,
-    "chiffre_le": "2026-05-17T12:02:47.961Z"
+    "chiffre_le": "2026-05-17T12:18:35.948Z",
+    "note": "Noms complets (NOM + Prénom) extraits feuille présence officielle"
   },
-  "salt": "7lyGhVdIjF8P0UQqDFfeOw==",
-  "iv": "/FGLHJmevVcbfuiV",
-  "ciphertext": "wqyfafFRbt3JR8UlamWx3l7Gd5aY7qijO7iFN5DS6rqP4vHpFuKC7sq/zbD1uJF5F5kcxryZVpDCicVN+t3s+5LPZzAa4SOkhXsimo6qZgptRKVL4uMg/0i3JXSmGHT93wOdF6AZZATcgGjqjv0LHVkijySdBiNiE/D1tH25R7XJJ/SIFUzRhk5woO6Ssjbea4R5lEBsF6t4cBApD39gEhYbDfwOEFeYMCustm4zi9pegXdAcmgJX5tGcEfxovwTBVps3X43rujNIs0rZ03gMP46LxuDvNqHwlBwtorcXn/9PlLE/8WU8AW0BS8h+yuurGG/o/4FMSPCgJRIs+3ZwfB5Um+qyD2Uc0DYn9mrJ4McIugpWwI/2+4A3YdxzHgBQUxEbon5jBSLD8muZCiAbjo6k3VdOfbpbn91HPW/oJzJptym4IEQ1FF/oli5Ncr1uWoAVgPeiz8O7Gqffj20qWXFQdkG+cQs7eeG4n4vSlNWl5KUf4YR9DTTisoQtA6sy3ZE3WoL+rsx+XfRUI7kCVzM"
+  "salt": "FwXZbybPH0fjq2Sse7oVJw==",
+  "iv": "nwl4PjY9kO4+bleI",
+  "ciphertext": "U+w0RbAApO2nVqLfoj0pwplNL2eDvg89NUQGRgo/UhwDrrENsSShfHduneJ1U1+8NTVeWcPdDdF2lgCc/t5A5Ia5OM/a3Rut9B3xt9PnroXby5YxPrjhX040AHsS7XAQ5cHPRedkmr50s7W0luP37bXDZdAxbZdNReag32yG9End95ed0J3BsJCuCvQjrZSKtXOtdR69Rc4yJ8r4SKqn0+/fNnciAZt8b3N3VeBktfpP/ffJJAyz7Jo7PTHo/bJrXZ6EiRPfIbeBSL9hP8lY9C/Scd8PI7eM+8/zf8zgAL2682fOzYxjZZljccRf1aTO+9XOmVYs6jA8EmIZaPfsJtor7K2eS+mJiDqja8/Gdcye2WUmVVvJ/5BWzjjrMba38allndXCIVbdF64wYYy+hirQYTxNLxE0HC5yH6GEpw2LqSi/lQAmNF4t9AGMMxxaiRAW3gBrwajNMTwUNkFeDbHji2QCZ/kxnreAtIvX4rO1dq6ullKawoBF2NlfQq5tAHmTIuFsFSYlz4CyZjQJ6/cbdvaduZtQfwx25pXzH6M+an13M5MVChidJghEyp1RkabA26U0M01KBGHtfd5EaRFwEhPauJ5FWJu6ZkgXhES7uCnAnjTbqEDdnfLPpOmF5qKvrjFho6wj0zk6P2G7i1IXxOEsY72Q4vhtbV/8VSUwvlE3DHUJeDVssFlRztRr7f8aRUYCvRiXysAnvaPJEprqYRpmBiJTHK8lY6GfjI8b5yVEudRT+Lf9n5A="
 }

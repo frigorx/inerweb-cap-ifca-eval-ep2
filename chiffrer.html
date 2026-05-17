@@ -81,14 +81,32 @@ git push</pre>
 (function() {
   'use strict';
 
-  /* Défaut : les 24 pseudos extraits de l'ancien eleves_pseudo.json */
+  /* Défaut : noms COMPLETS (NOM + Prénom) — feuille de présence officielle CAP IFCA 2 */
   var DEFAULT_CORRESP = {
-    "E01": "ABadis", "E02": "AYacine", "E03": "BAbderahim", "E04": "BKaïss",
-    "E05": "BIyad", "E06": "CDainis", "E07": "DRïad", "E08": "DMathys",
-    "E09": "DSouleymane", "E10": "FRyad", "E11": "GBartosz", "E12": "KYoussouf",
-    "E13": "KYanis", "E14": "MFrédéric", "E15": "MMyrone", "E16": "NFrancis",
-    "E17": "ONabil", "E18": "OHerve", "E19": "SAnes", "E20": "TAli",
-    "E21": "bjibril", "E22": "adavid", "E23": "flancinet", "E24": "adriss"
+    "E01": "AOUAMEUR Badis",
+    "E02": "AZIZ Yacine",
+    "E03": "BAHLOULI Abderahim",
+    "E04": "BELHANI Kaïss",
+    "E05": "BOUALLEG Iyad",
+    "E06": "CARBILA Dainis",
+    "E07": "DAHMANE Rïad",
+    "E08": "DEWITTE Mathys",
+    "E09": "DIARRASSOUBA Souleymane",
+    "E10": "FLEUVE Ryad",
+    "E11": "GIBALA Bartosz",
+    "E12": "KAMARA Youssouf",
+    "E13": "KASRI Yanis",
+    "E14": "MENDY Frédéric",
+    "E15": "MIRIDJANIAN Myrone",
+    "E16": "NKOKO Francis",
+    "E17": "OUALANE Nabil",
+    "E18": "OURA Herve",
+    "E19": "SABER CHOUIREF Anes",
+    "E20": "TENGOUR Ali",
+    "E21": "BOUGHANMI Jibril",
+    "E22": "AKKAYA David",
+    "E23": "FOFANA Lancinet",
+    "E24": "AGUENI Dris"
   };
 
   document.getElementById('btn-load-default').onclick = function() {

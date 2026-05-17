@@ -3,20 +3,67 @@
   "epreuve": "EP2-ELEC",
   "intitule": "✅ CCF EP2 — Raccordement Électrique",
   "session": "2025/26",
-  "version_bareme": "V2-2026-05-17",
+  "version_bareme": "V3-2026-05-17-NE",
   "duree_h": 3.5,
   "coef": 4,
   "total_max": 115,
   "diviseur_note_finale": 115,
   "ramene_sur": 20,
   "sous_epreuves": [
-    { "code": "EP2-ELEC", "label": "Raccordement électrique complet", "coef": 1, "couleur": "#1b3a63", "blocs": ["A", "B", "C", "D", "E"], "competences_cles": ["C1.2", "C3.1", "C3.3", "C3.6", "C3.7", "C3.8"] }
+    {
+      "code": "EP2-ELEC",
+      "label": "Raccordement électrique complet",
+      "coef": 1,
+      "couleur": "#1b3a63",
+      "blocs": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+      ],
+      "competences_cles": [
+        "C1.2",
+        "C3.1",
+        "C3.3",
+        "C3.6",
+        "C3.7",
+        "C3.8"
+      ]
+    }
   ],
   "niveaux": [
-    { "code": "NA", "label": "Non acquis",          "couleur": "#c53030", "indice": 0 },
-    { "code": "EC", "label": "En cours",            "couleur": "#dd6b20", "indice": 1 },
-    { "code": "A",  "label": "Acquis",              "couleur": "#38a169", "indice": 2 },
-    { "code": "PA", "label": "Parfaitement acquis", "couleur": "#1b3a63", "indice": 3 }
+    {
+      "code": "NE",
+      "label": "Non évalué",
+      "couleur": "#718096",
+      "indice": -1,
+      "exclu_calcul": true
+    },
+    {
+      "code": "NA",
+      "label": "Non acquis",
+      "couleur": "#e53e3e",
+      "indice": 0
+    },
+    {
+      "code": "EC",
+      "label": "En cours",
+      "couleur": "#ed8936",
+      "indice": 1
+    },
+    {
+      "code": "A",
+      "label": "Acquis",
+      "couleur": "#48bb78",
+      "indice": 2
+    },
+    {
+      "code": "PA",
+      "label": "Parfaitement acquis",
+      "couleur": "#3182ce",
+      "indice": 3
+    }
   ],
   "blocs": [
     {
@@ -32,11 +79,17 @@
           "comp": "C3.1",
           "critere": "Travailler en sécurité : port continu des EPI électriques adaptés",
           "max": 3,
-          "niveaux": [0, 1, 2, 3],
+          "niveaux": [
+            0,
+            0,
+            1,
+            2,
+            3
+          ],
           "indicateurs": {
             "NA": "EPI non portés.",
             "EC": "EPI partiels (1 ou 2 manquants).",
-            "A":  "Tous les EPI portés.",
+            "A": "Tous les EPI portés.",
             "PA": "EPI parfaits, posture sécurité exemplaire."
           }
         },
@@ -46,11 +99,17 @@
           "comp": "C3.1",
           "critere": "Maintenir la zone de travail propre et ordonnée ; gérer l'outillage",
           "max": 3,
-          "niveaux": [0, 1, 2, 3],
+          "niveaux": [
+            0,
+            0,
+            1,
+            2,
+            3
+          ],
           "indicateurs": {
             "NA": "Bordel total. Caisse non rangée, passage encombré.",
             "EC": "Caisse mal rangée. Poste désordonné.",
-            "A":  "Poste correct. Caisse sous établi.",
+            "A": "Poste correct. Caisse sous établi.",
             "PA": "Impeccable. Zone parfaitement organisée."
           }
         },
@@ -60,11 +119,17 @@
           "comp": "C3.1",
           "critere": "Gérer l'outillage : vérifier disponibilité et état avant intervention",
           "max": 2,
-          "niveaux": [0, 1, 1, 2],
+          "niveaux": [
+            0,
+            0,
+            1,
+            1,
+            2
+          ],
           "indicateurs": {
             "NA": "Pas fait.",
             "EC": "Vérification partielle.",
-            "A":  "Vérification faite, anomalies signalées.",
+            "A": "Vérification faite, anomalies signalées.",
             "PA": "Vérification méthodique et complète."
           }
         }
@@ -83,11 +148,17 @@
           "comp": "C3.3",
           "critere": "Implanter, fixer les équipements conformément au plan d'implantation",
           "max": 15,
-          "niveaux": [0, 5, 10, 15],
+          "niveaux": [
+            0,
+            0,
+            5,
+            10,
+            15
+          ],
           "indicateurs": {
             "NA": "5 composants ou + mal placés. Plan non respecté.",
             "EC": "3 à 4 composants mal placés.",
-            "A":  "1 à 2 composants mal placés.",
+            "A": "1 à 2 composants mal placés.",
             "PA": "0 erreur — implantation parfaite conformément au plan."
           }
         }
@@ -106,11 +177,17 @@
           "comp": "C3.6",
           "critere": "Câbler conformément au schéma de puissance (N, L1, L2, L3)",
           "max": 9,
-          "niveaux": [0, 3, 6, 9],
+          "niveaux": [
+            0,
+            0,
+            3,
+            6,
+            9
+          ],
           "indicateurs": {
             "NA": "4 erreurs ou plus de câblage.",
             "EC": "2 à 3 erreurs.",
-            "A":  "1 erreur.",
+            "A": "1 erreur.",
             "PA": "0 erreur — câblage strictement conforme."
           }
         },
@@ -120,11 +197,17 @@
           "comp": "C3.6",
           "critere": "Réaliser les connexions correctes et conformes (serrage au couple)",
           "max": 7,
-          "niveaux": [0, 2, 4, 7],
+          "niveaux": [
+            0,
+            0,
+            2,
+            4,
+            7
+          ],
           "indicateurs": {
             "NA": "4 câbles arrachés ou plus.",
             "EC": "2 à 3 câbles arrachés au test.",
-            "A":  "1 câble arraché.",
+            "A": "1 câble arraché.",
             "PA": "0 câble arraché — serrages parfaits."
           }
         },
@@ -134,11 +217,17 @@
           "comp": "C3.6",
           "critere": "Connexions sécurisées : isolation conservée au-delà du bornier",
           "max": 3,
-          "niveaux": [0, 1, 2, 3],
+          "niveaux": [
+            0,
+            0,
+            1,
+            2,
+            3
+          ],
           "indicateurs": {
             "NA": "4 bornes ou plus avec cuivre apparent.",
             "EC": "2 à 3 bornes avec cuivre apparent.",
-            "A":  "1 borne avec cuivre apparent.",
+            "A": "1 borne avec cuivre apparent.",
             "PA": "0 cuivre apparent — finition pro."
           }
         },
@@ -148,11 +237,17 @@
           "comp": "C3.6",
           "critere": "Câbles rangés, préparés, repérés et fixés conformément",
           "max": 3,
-          "niveaux": [0, 1, 2, 3],
+          "niveaux": [
+            0,
+            0,
+            1,
+            2,
+            3
+          ],
           "indicateurs": {
             "NA": "Spaghetti — câbles en vrac.",
             "EC": "Moyen — quelques croisements.",
-            "A":  "Propre — câbles alignés.",
+            "A": "Propre — câbles alignés.",
             "PA": "Joli — câblage exemplaire, rangé."
           }
         },
@@ -162,11 +257,17 @@
           "comp": "C3.6",
           "critere": "Câbler conformément au schéma de commande (numéros fils, NO/NF)",
           "max": 9,
-          "niveaux": [0, 3, 6, 9],
+          "niveaux": [
+            0,
+            0,
+            3,
+            6,
+            9
+          ],
           "indicateurs": {
             "NA": "4 erreurs ou plus de câblage.",
             "EC": "2 à 3 erreurs.",
-            "A":  "1 erreur.",
+            "A": "1 erreur.",
             "PA": "0 erreur — câblage strictement conforme."
           }
         },
@@ -176,11 +277,17 @@
           "comp": "C3.6",
           "critere": "Connexions correctes au couple, contacts NO/NF respectés",
           "max": 7,
-          "niveaux": [0, 2, 4, 7],
+          "niveaux": [
+            0,
+            0,
+            2,
+            4,
+            7
+          ],
           "indicateurs": {
             "NA": "4 câbles arrachés ou plus.",
             "EC": "2 à 3 câbles arrachés.",
-            "A":  "1 câble arraché.",
+            "A": "1 câble arraché.",
             "PA": "0 câble arraché — serrages parfaits."
           }
         },
@@ -190,11 +297,17 @@
           "comp": "C3.6",
           "critere": "Isolation conservée, sécurité électrique au-delà des borniers",
           "max": 3,
-          "niveaux": [0, 1, 2, 3],
+          "niveaux": [
+            0,
+            0,
+            1,
+            2,
+            3
+          ],
           "indicateurs": {
             "NA": "4 bornes ou plus avec cuivre apparent.",
             "EC": "2 à 3 bornes.",
-            "A":  "1 borne.",
+            "A": "1 borne.",
             "PA": "0 cuivre apparent."
           }
         },
@@ -204,11 +317,17 @@
           "comp": "C3.6",
           "critere": "Câbles repérés, rangés, identifiables (entretien futur facilité)",
           "max": 3,
-          "niveaux": [0, 1, 2, 3],
+          "niveaux": [
+            0,
+            0,
+            1,
+            2,
+            3
+          ],
           "indicateurs": {
             "NA": "Spaghetti.",
             "EC": "Moyen.",
-            "A":  "Propre.",
+            "A": "Propre.",
             "PA": "Joli — rangement exemplaire."
           }
         },
@@ -218,11 +337,17 @@
           "comp": "C3.7",
           "critere": "Vérifier polarité, respect schéma, mise à la terre AVANT enclenchement",
           "max": 3,
-          "niveaux": [0, 1, 2, 3],
+          "niveaux": [
+            0,
+            0,
+            1,
+            2,
+            3
+          ],
           "indicateurs": {
             "NA": "Pas d'auto-contrôle.",
             "EC": "Contrôle partiel.",
-            "A":  "Contrôle fait, corrections apportées.",
+            "A": "Contrôle fait, corrections apportées.",
             "PA": "Contrôle méthodique et complet avant tension."
           }
         }
@@ -241,11 +366,17 @@
           "comp": "C3.1",
           "critere": "Travailler en sécurité : signaler avant enclenchement, EPI portés",
           "max": 5,
-          "niveaux": [0, 2, 4, 5],
+          "niveaux": [
+            0,
+            0,
+            2,
+            4,
+            5
+          ],
           "indicateurs": {
             "NA": "Non respecté — enclenchement sans prévenir, EPI absents.",
             "EC": "1 manquement (EPI ou prévenance).",
-            "A":  "Respecté — prévient examinateur, EPI OK.",
+            "A": "Respecté — prévient examinateur, EPI OK.",
             "PA": "Exemplaire — méthode pro stricte (prévenance, EPI, vérif autour)."
           }
         },
@@ -255,11 +386,17 @@
           "comp": "C3.7",
           "critere": "Vérifier mise en œuvre équipement : compresseur démarre et fonctionne",
           "max": 10,
-          "niveaux": [0, 3, 7, 10],
+          "niveaux": [
+            0,
+            0,
+            3,
+            7,
+            10
+          ],
           "indicateurs": {
             "NA": "Ne marche pas — câblage en cause.",
             "EC": "Démarre partiellement / par à-coups.",
-            "A":  "Fonctionne — démarrage et marche OK.",
+            "A": "Fonctionne — démarrage et marche OK.",
             "PA": "Parfait — fonctionnement nominal, pas de bruit anormal."
           }
         },
@@ -269,11 +406,17 @@
           "comp": "C3.7",
           "critere": "Vérifier mise en œuvre : ventilateur condenseur + EV fonctionnent",
           "max": 10,
-          "niveaux": [0, 3, 7, 10],
+          "niveaux": [
+            0,
+            0,
+            3,
+            7,
+            10
+          ],
           "indicateurs": {
             "NA": "Ne marche pas.",
             "EC": "Partiel (1 sur 2 fonctionne).",
-            "A":  "Fonctionne — les 2 organes marchent.",
+            "A": "Fonctionne — les 2 organes marchent.",
             "PA": "Parfait — synchronisation correcte, séquence respectée."
           }
         },
@@ -283,11 +426,17 @@
           "comp": "C1.2",
           "critere": "Expliquer un fonctionnement : informations orales claires, vocabulaire technique adapté",
           "max": 10,
-          "niveaux": [0, 4, 7, 10],
+          "niveaux": [
+            0,
+            0,
+            4,
+            7,
+            10
+          ],
           "indicateurs": {
             "NA": "Confus — pas capable d'expliquer.",
             "EC": "Partiel — explique quelques étapes seulement.",
-            "A":  "Clair — explique le fonctionnement global.",
+            "A": "Clair — explique le fonctionnement global.",
             "PA": "Parfait — vocabulaire pro, séquence complète, anticipe les questions."
           }
         }
@@ -306,11 +455,17 @@
           "comp": "C3.8",
           "critere": "Trier, valoriser les déchets ; poste rendu propre (sol + établi)",
           "max": 10,
-          "niveaux": [0, 3, 6, 10],
+          "niveaux": [
+            0,
+            0,
+            3,
+            6,
+            10
+          ],
           "indicateurs": {
             "NA": "Parti sans rien ranger.",
             "EC": "Poste rangé, sol sale, tri non fait.",
-            "A":  "Platine décâblée, poste propre, tri OK.",
+            "A": "Platine décâblée, poste propre, tri OK.",
             "PA": "Tout parfaitement rangé, sol et établi impeccables, tri complet."
           }
         }

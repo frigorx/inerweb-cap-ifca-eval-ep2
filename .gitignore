@@ -1,6 +1,8 @@
 node_modules/
 *.log
 correspondance_eleves.json
+data/eleves_correspondance.json
+data/correspondance_eleves.json
 local/
 *.private.*
 *-prive.*

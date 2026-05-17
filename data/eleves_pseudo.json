@@ -1,43 +1,42 @@
 {
   "_meta": {
-    "version": "2.0",
-    "description": "Liste des pseudos élèves CAP IFCA — format 1re lettre nom + prénom complet",
-    "lastUpdate": "2026-04-26",
-    "rgpd": "Le prénom est visible dans le pseudo (choix prof). La correspondance Pseudo → Nom complet est dans data/correspondance_eleves.json (gitignored, USB côté prof maître uniquement). Le Sheet ne reçoit que le pseudo.",
-    "format_pseudo": "1re lettre du nom de famille (casse préservée) + prénom complet"
+    "version": "3.0-public",
+    "description": "Codes anonymes E01..E24 — version publique RGPD-conforme.",
+    "lastUpdate": "2026-05-17",
+    "rgpd": "Aucune donnée nominative dans ce fichier. La table de correspondance code → pseudo lisible (avec prénoms) est dans data/eleves_correspondance.json, jamais commité (gitignored, reste sur le PC prof). L'app affiche le pseudo lisible UNIQUEMENT si le fichier de correspondance est présent localement.",
+    "format_pseudo": "Code anonyme E + 2 chiffres (E01 à E24)"
   },
   "classes": {
     "CAP_IFCA_2": [
-      "ABadis", "AYacine", "BAbderahim", "BKaïss", "BIyad", "CDainis",
-      "DRïad", "DMathys", "DSouleymane", "FRyad", "GBartosz", "KYoussouf",
-      "KYanis", "MFrédéric", "MMyrone", "NFrancis", "ONabil", "OHerve",
-      "SAnes", "TAli", "bjibril", "adavid", "flancinet", "adriss"
+      "E01", "E02", "E03", "E04", "E05", "E06", "E07", "E08",
+      "E09", "E10", "E11", "E12", "E13", "E14", "E15", "E16",
+      "E17", "E18", "E19", "E20", "E21", "E22", "E23", "E24"
     ]
   },
   "eleves": [
-    { "pseudo": "ABadis",      "classe": "CAP IFCA 2" },
-    { "pseudo": "AYacine",     "classe": "CAP IFCA 2" },
-    { "pseudo": "BAbderahim",  "classe": "CAP IFCA 2" },
-    { "pseudo": "BKaïss",      "classe": "CAP IFCA 2" },
-    { "pseudo": "BIyad",       "classe": "CAP IFCA 2" },
-    { "pseudo": "CDainis",     "classe": "CAP IFCA 2" },
-    { "pseudo": "DRïad",       "classe": "CAP IFCA 2" },
-    { "pseudo": "DMathys",     "classe": "CAP IFCA 2" },
-    { "pseudo": "DSouleymane", "classe": "CAP IFCA 2" },
-    { "pseudo": "FRyad",       "classe": "CAP IFCA 2" },
-    { "pseudo": "GBartosz",    "classe": "CAP IFCA 2" },
-    { "pseudo": "KYoussouf",   "classe": "CAP IFCA 2" },
-    { "pseudo": "KYanis",      "classe": "CAP IFCA 2" },
-    { "pseudo": "MFrédéric",   "classe": "CAP IFCA 2" },
-    { "pseudo": "MMyrone",     "classe": "CAP IFCA 2" },
-    { "pseudo": "NFrancis",    "classe": "CAP IFCA 2" },
-    { "pseudo": "ONabil",      "classe": "CAP IFCA 2" },
-    { "pseudo": "OHerve",      "classe": "CAP IFCA 2" },
-    { "pseudo": "SAnes",       "classe": "CAP IFCA 2" },
-    { "pseudo": "TAli",        "classe": "CAP IFCA 2" },
-    { "pseudo": "bjibril",     "classe": "CAP IFCA 2" },
-    { "pseudo": "adavid",      "classe": "CAP IFCA 2" },
-    { "pseudo": "flancinet",   "classe": "CAP IFCA 2" },
-    { "pseudo": "adriss",      "classe": "CAP IFCA 2" }
+    { "pseudo": "E01", "classe": "CAP IFCA 2" },
+    { "pseudo": "E02", "classe": "CAP IFCA 2" },
+    { "pseudo": "E03", "classe": "CAP IFCA 2" },
+    { "pseudo": "E04", "classe": "CAP IFCA 2" },
+    { "pseudo": "E05", "classe": "CAP IFCA 2" },
+    { "pseudo": "E06", "classe": "CAP IFCA 2" },
+    { "pseudo": "E07", "classe": "CAP IFCA 2" },
+    { "pseudo": "E08", "classe": "CAP IFCA 2" },
+    { "pseudo": "E09", "classe": "CAP IFCA 2" },
+    { "pseudo": "E10", "classe": "CAP IFCA 2" },
+    { "pseudo": "E11", "classe": "CAP IFCA 2" },
+    { "pseudo": "E12", "classe": "CAP IFCA 2" },
+    { "pseudo": "E13", "classe": "CAP IFCA 2" },
+    { "pseudo": "E14", "classe": "CAP IFCA 2" },
+    { "pseudo": "E15", "classe": "CAP IFCA 2" },
+    { "pseudo": "E16", "classe": "CAP IFCA 2" },
+    { "pseudo": "E17", "classe": "CAP IFCA 2" },
+    { "pseudo": "E18", "classe": "CAP IFCA 2" },
+    { "pseudo": "E19", "classe": "CAP IFCA 2" },
+    { "pseudo": "E20", "classe": "CAP IFCA 2" },
+    { "pseudo": "E21", "classe": "CAP IFCA 2" },
+    { "pseudo": "E22", "classe": "CAP IFCA 2" },
+    { "pseudo": "E23", "classe": "CAP IFCA 2" },
+    { "pseudo": "E24", "classe": "CAP IFCA 2" }
   ]
 }

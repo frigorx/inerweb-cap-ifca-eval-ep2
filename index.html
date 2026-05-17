@@ -361,16 +361,18 @@
   let currentEleve = null;
   let activeTab = 'ep2faco';
   let elevesList = [];
+  let correspondance = {};
   let saveTimer = null;
   const DEBOUNCE_MS = 400;
 
   /* ========== BOOTSTRAP ========== */
   async function init() {
-    /* Charger les 2 barèmes EN PARALLÈLE */
-    const [bFaco, bElec, jEleves] = await Promise.all([
+    /* Charger les 2 barèmes EN PARALLÈLE + tenter la table de correspondance locale */
+    const [bFaco, bElec, jEleves, jCorresp] = await Promise.all([
       CCF.load('ep2faco'),
       CCF.load('ep2elec'),
-      Catalog.load('eleves_pseudo.json')
+      Catalog.load('eleves_pseudo.json'),
+      Catalog.load('eleves_correspondance.json')  /* 404 silencieux si absent */
     ]);
     if (!bFaco || !bElec) {
       document.getElementById('grid-root').innerHTML =
@@ -380,6 +382,12 @@
     baremes.ep2faco = bFaco;
     baremes.ep2elec = bElec;
     elevesList = (jEleves && jEleves.eleves) || [];
+    correspondance = (jCorresp && jCorresp.corresp) || {};
+    if (Object.keys(correspondance).length > 0) {
+      console.log('[Corresp] Table chargée :', Object.keys(correspondance).length, 'élèves, mode lisible activé');
+    } else {
+      console.log('[Corresp] Pas de table locale → mode anonyme E01..E24');
+    }
     fillEleveSelect();
 
     document.getElementById('pick-eleve').onchange   = (e) => switchEleve(e.target.value || null);
@@ -406,8 +414,19 @@
 
   function fillEleveSelect() {
     const sel = document.getElementById('pick-eleve');
-    sel.innerHTML = '<option value="">— Choisir un élève (pseudo) —</option>' +
-      elevesList.map(e => `<option value="${e.pseudo}">${e.pseudo} (${e.classe})</option>`).join('');
+    const hasCorresp = Object.keys(correspondance).length > 0;
+    sel.innerHTML = '<option value="">— Choisir un élève —</option>' +
+      elevesList.map(e => {
+        const lisible = correspondance[e.pseudo];
+        const label = hasCorresp && lisible ? `${e.pseudo} — ${lisible}` : `${e.pseudo} (${e.classe})`;
+        return `<option value="${e.pseudo}">${label}</option>`;
+      }).join('');
+  }
+
+  /** Retourne le libellé lisible (pseudo + nom si dispo) pour affichage écran (jamais envoyé serveur) */
+  function eleveLabel(pseudo) {
+    const lisible = correspondance[pseudo];
+    return lisible ? `${pseudo} — ${lisible}` : pseudo;
   }
 
   /* ========== CHANGEMENT D'ÉLÈVE ========== */
